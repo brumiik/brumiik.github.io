@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+::selection {
+  color: #000;
+  background: white;
+}
+nav {
+  position: fixed;
+  background: #1b1b1b;
+  width: 100%;
+  padding: 10px 0;
+  z-index: 12;
+}
+nav .menu {
+  max-width: 1250px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+.menu .logo a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 35px;
+  font-weight: 600;
+}
+.menu ul li a:hover {
+  background: #fff;
+  color: black;
+}
+.úvod {
+  height: 100vh;
+  width: auto;
+  background: url("pozadi.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.center {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  padding: 0 20px;
+  text-align: center;
+}
+.center .title {
+  color: #fff;
+  font-size: 55px;
+  font-weight: 600;
+}
+.center .sub_title {
+  color: #fff;
+  font-size: 52px;
+  font-weight: 600;
+}
+.omne {
+  max-width: 100%;
+  padding: 100px;
+  background-color: #191919;
+}
+.about img {
+  height: auto;
+  max-width: 100%;
+}
+.omne-text {
+  width: 550px;
+}
+.main {
+  width: 1130px;
+  max-width: 95%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.omne-text h2 {
+  color: white;
+  font-size: 75px;
+  text-transform: capitalize;
+  margin-bottom: 20px;
+}
+.omne-text h5 {
+  color: white;
+  letter-spacing: 2px;
+  font-size: 22px;
+  margin-bottom: 25px;
+  text-transform: capitalize;
+}
+.omne-text p {
+  color: gray;
+  letter-spacing: 2px;
+  line-height: 28px;
+  font-size: 18px;
+  margin-bottom: 45px;
+}
+.kontakt .button {
+  background-color: gray;
+  color: white;
+  text-decoration: none;
+  border: 2px solid transparent;
+  font-weight: bold;
+  padding: 13px 30px;
+  border-radius: 30px;
+  transition: 0.4s;
+}
+button:hover {
+  background-color: transparent;
+  border: 2px solid gray;
+  cursor: pointer;
+}
+.program {
+  background: #101010;
+  width: 100%;
+  padding: 100px 0px;
+}
+.title h2 {
+  color: white;
+  font-size: 75px;
+  width: auto;
+  margin: 30px auto;
+  text-align: center;
+}
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+.card {
+  height: 365px;
+  width: 335px;
+  background: #191919;
+  border-radius: 20px;
+  margin: 25px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.card i {
+  font-size: 50px;
+  display: block;
+  text-align: center;
+  margin: 25px 0px;
+  color: gray;
+}
+h5 {
+  color: white;
+  font-size: 23px;
+  margin-bottom: 15px;
+}
+.pra p {
+  color: gray;
+  font-size: 16px;
+  line-height: 27px;
+  margin-bottom: 25px;
+}
+.card .button {
+  background-color: gray;
+  color: white;
+  text-decoration: none;
+  border: 2px solid transparent;
+  font-weight: bold;
+  padding: 9px 22px;
+  border-radius: 30px;
+  transition: 0.4s;
+}
+.card .button:hover {
+  background-color: transparent;
+  border: 2px solid gray;
+  cursor: pointer;
+}
+.nadpis h5 {
+  color: #fff;
+  font-size: 55px;
+  font-weight: 200px;
+}
+.pozice {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  padding: 0 20px;
+  text-align: center;
+}
+.card1 {
+  max-height: 1500;
+  max-width: 800px;
+  background: #191919;
+  border-radius: 20px;
+  margin: 15px auto;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 20px;
+  border: 3px solid transparent;
+}
+.box1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: auto;
+  max-width: auto;
+}
+.txt p {
+  color: gray;
+  font-size: 16px;
+  line-height: 27px;
+  margin-bottom: auto;
+}
+.card1 .button {
+  background-color: gray;
+  color: white;
+  text-decoration: none;
+  border: 3px solid transparent;
+  font-weight: bold;
+  padding: 1px 22px;
+  border-radius: 30px;
+  transition: 0.4s;
+}
+.card1 .button:hover {
+  background-color: transparent;
+  border: 2px solid gray;
+  cursor: pointer;
+}
