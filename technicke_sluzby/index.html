@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Evidence výjezdů</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    header { background: #005a8d; color: white; padding: 1rem; text-align: center; }
+    nav { background: #0073b1; padding: 0.5rem; display: flex; gap: 1rem; }
+    nav a { color: white; text-decoration: none; font-weight: bold; }
+    .container { display: none; padding: 20px; }
+    .active { display: block; }
+    form label { display: block; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f2f2f2; }
+  </style>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHG2x7eQrr0Ra8K-nkVOybMFZRu6t1How",
+      authDomain: "tsrc-vyjezdy.firebaseapp.com",
+      databaseURL: "https://tsrc-vyjezdy-default-rtdb.firebaseio.com",
+      projectId: "tsrc-vyjezdy",
+      storageBucket: "tsrc-vyjezdy.firebasestorage.app",
+      messagingSenderId: "1083067337108",
+      appId: "1:1083067337108:web:dc8104a2b344a20d5be781"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function zobrazVyjezdy() {
+      const out = document.getElementById('prehledVyjezdu');
+      db.ref('vyjezdy').on('value', snap => {
+        out.innerHTML = '';
+        const data = snap.val();
+        if (!data) return out.innerHTML = '<p>Žádné výjezdy.</p>';
+        let html = '<table><tr><th>Datum</th><th>Osoba</th><th>Činnost</th><th>Místo</th></tr>';
+        Object.values(data).forEach(v => {
+          html += `<tr><td>${v.datum}</td><td>${v.zodpovedna}</td><td>${v.cinnost}</td><td>${v.misto}</td></tr>`;
+        });
+        out.innerHTML = html + '</table>';
+      });
+    }
+
+    function show(id) {
+      document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id==='prehled') zobrazVyjezdy();
+    }
+
+    window.onload = () => {
+      document.getElementById('vyjezdForm').onsubmit = e => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        data.datum = new Date().toLocaleDateString('cs-CZ');
+        db.ref('vyjezdy').push(data);
+        alert('Výjezd uložen!');
+        e.target.reset();
+      };
+      show('home');
+    };
+  </script>
+</head>
+<body>
+  <header><h1>Evidence výjezdů TSRC</h1></header>
+  <nav>
+    <a href="#" onclick="show('home')">Domů</a>
+    <a href="#" onclick="show('formular')">Formulář</a>
+    <a href="#" onclick="show('prehled')">Přehled</a>
+    <a href="/login">Přihlásit se přes Discord</a>
+  </nav>
+
+  <div id="home" class="container"><h2>Vítejte</h2><p>Správa výjezdů TSRC.</p></div>
+
+  <div id="formular" class="container">
+    <h2>Nový výjezd</h2>
+    <form id="vyjezdForm">
+      <label>Odpovědná osoba:<input name="zodpovedna" required></label>
+      <label>Pracovníci:<input name="pracovnici"></label>
+      <label>Začátek:<input name="start" type="time" required></label>
+      <label>Konec:<input name="end" type="time" required></label>
+      <label>Místo:<input name="misto" required></label>
+      <label>Činnost:<input name="cinnost" required></label>
+      <label>Vozidla:<input name="vozidla"></label>
+      <label>Poznámka:<textarea name="poznamka"></textarea></label>
+      <button type="submit">Odeslat</button>
+    </form>
+  </div>
+
+  <div id="prehled" class="container"><h2>Přehled výjezdů</h2><div id="prehledVyjezdu"></div></div>
+</body>
+</html>
