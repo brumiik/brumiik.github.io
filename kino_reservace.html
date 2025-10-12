@@ -18,7 +18,6 @@
     .container{max-width:900px;width:100%;background:white;border-radius:12px;padding:20px;box-shadow:0 6px 20px rgba(2,6,23,0.06)}
     h1{margin:0 0 10px;font-size:20px}
     p.lead{margin:0 0 18px;color:#475569}
-
     .screen{height:18px;background:linear-gradient(90deg,#c7e0ff,#eef6ff);border-radius:8px;text-align:center;padding:6px 10px;margin:0 auto 18px;color:#0f172a;font-weight:600;max-width:420px}
     .theater{display:flex;gap:var(--aisle-width);align-items:flex-start;justify-content:center}
     .block{display:grid;grid-auto-rows:var(--seat-size);grid-auto-columns:var(--seat-size);gap:var(--gap);padding:6px}
@@ -48,14 +47,14 @@
 </head>
 <body>
   <div class="container">
-    <h1>Angel Pine Cinema</h1>
-    <p class="lead">Rezervace sedadel na SO 11.10.2025, film Šmoulové. Kliknutím vyberte sedadla a vyplňte formulář.</p>
+    <h1>Rezervace sedadel — Kino</h1>
+    <p class="lead">Rozložení: vlevo 3×3, ulička, vpravo 4×3. Kliknutím vyberte sedadla a vyplňte formulář.</p>
 
     <div class="screen">PLÁTNO</div>
     <div class="theater" id="theater"></div>
 
     <div class="legend">
-      <span><i class="sw" style="background:var(--available);border:2px solid rgba(15,23,42,0.06)"></i> Volné</span>
+      <span><i class="sw" style="background:var(--available);border:2px solid rgba(15,23,42,0.08)"></i> Volné</span>
       <span><i class="sw" style="background:var(--selected)"></i> Vybrané</span>
       <span><i class="sw" style="background:var(--reserved)"></i> Rezervované</span>
     </div>
@@ -87,114 +86,129 @@
     </div>
   </div>
 
-  <script>
-    const layout = { left: {cols:3, rows:3, prefix:'L'}, right:{cols:4, rows:3, prefix:'R'} };
-    const LS_KEY = 'kino_reserved';
-    const LS_USERS = 'kino_users';
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, get, push, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-    const theaterEl = document.getElementById('theater');
-    const infoEl = document.getElementById('info');
-    const reserveBtn = document.getElementById('reserveBtn');
-    const clearBtn = document.getElementById('clearSelection');
-    const formEl = document.getElementById('reservationForm');
-    const successMsg = document.getElementById('successMsg');
-    const adminBtn = document.getElementById('adminBtn');
-    const adminPanel = document.getElementById('adminPanel');
+const firebaseConfig = {
+  apiKey: "AIzaSyC8pllurfqrWcp8vLU7TcSPv3mMx1KyX9E",
+  authDomain: "kino-rezervace.firebaseapp.com",
+  databaseURL: "https://kino-rezervace-default-rtdb.firebaseio.com",
+  projectId: "kino-rezervace",
+  storageBucket: "kino-rezervace.firebasestorage.app",
+  messagingSenderId: "674656321157",
+  appId: "1:674656321157:web:97385b4920e5ba190773ec",
+  measurementId: "G-X6NM789YW5"
+};
 
-    let reserved = new Set(JSON.parse(localStorage.getItem(LS_KEY) || '[]'));
-    let selected = new Set();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    function createBlock(kind){
-      const cfg = layout[kind];
-      const block = document.createElement('div');
-      block.className = 'block ' + kind;
-      for(let r=1;r<=cfg.rows;r++){
-        for(let c=1;c<=cfg.cols;c++){
-          const id = `${cfg.prefix}${r}${String.fromCharCode(64 + c)}`;
-          const seat = document.createElement('button');
-          seat.className = 'seat';
-          seat.type = 'button';
-          seat.dataset.seat = id;
-          seat.textContent = id;
-          if(reserved.has(id)){ seat.classList.add('reserved'); seat.disabled=true; }
-          seat.addEventListener('click', ()=>{
-            if(seat.classList.contains('reserved')) return;
-            if(selected.has(id)){ selected.delete(id); seat.classList.remove('selected'); }
-            else { selected.add(id); seat.classList.add('selected'); }
-            infoEl.textContent = `Vybráno: ${selected.size}`;
-          });
-          block.appendChild(seat);
-        }
-      }
-      return block;
-    }
+const theaterEl = document.getElementById('theater');
+const infoEl = document.getElementById('info');
+const reserveBtn = document.getElementById('reserveBtn');
+const clearBtn = document.getElementById('clearSelection');
+const formEl = document.getElementById('reservationForm');
+const successMsg = document.getElementById('successMsg');
+const adminBtn = document.getElementById('adminBtn');
+const adminPanel = document.getElementById('adminPanel');
 
-    function render(){
-      theaterEl.innerHTML='';
-      theaterEl.appendChild(createBlock('left'));
-      theaterEl.appendChild(createBlock('right'));
-    }
+const layout = { left: {cols:3, rows:3, prefix:'L'}, right:{cols:4, rows:3, prefix:'R'} };
+let reserved = new Set();
+let selected = new Set();
 
-    reserveBtn.addEventListener('click', ()=>{
-      if(selected.size===0){ alert('Vyberte alespoň jedno sedadlo.'); return; }
-      formEl.style.display='flex';
-      successMsg.style.display='none';
-    });
+async function loadReservations() {
+  const snapshot = await get(ref(db, 'reservations'));
+  reserved.clear();
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    Object.values(data).forEach(r => r.seats.forEach(s => reserved.add(s)));
+  }
+  render();
+}
 
-    formEl.addEventListener('submit', e=>{
-      e.preventDefault();
-      const users = JSON.parse(localStorage.getItem(LS_USERS) || '[]');
-      const user = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        email: document.getElementById('email').value,
-        seats: Array.from(selected)
-      };
-      users.push(user);
-      localStorage.setItem(LS_USERS, JSON.stringify(users));
-      selected.forEach(s=>reserved.add(s));
-      localStorage.setItem(LS_KEY, JSON.stringify(Array.from(reserved)));
-      selected.clear(); render(); formEl.reset(); formEl.style.display='none';
-      successMsg.innerHTML = 'Rezervace byla úspěšně provedena!<br>Zaplaťte částku <strong>50.000,-</strong> převodem na účet John Dreilor nejpozději do 24 hodin od provedení rezervace, jinak bude zrušena.';
-      successMsg.style.display='block';
-    });
-
-    clearBtn.addEventListener('click', ()=>{ selected.clear(); render(); });
-
-    adminBtn.addEventListener('click', ()=>{
-      if(adminPanel.style.display === 'block') { adminPanel.style.display='none'; return; }
-      const password = prompt('Zadejte admin heslo:');
-      if(password !== 'APKINO14ADMIN'){ alert('Nesprávné heslo'); return; }
-      adminPanel.style.display='block';
-      renderAdmin();
-    });
-
-    function renderAdmin(){
-      const tbody = adminPanel.querySelector('tbody');
-      tbody.innerHTML='';
-      const users = JSON.parse(localStorage.getItem(LS_USERS) || '[]');
-      users.forEach((u,i)=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${u.firstName}</td><td>${u.lastName}</td><td>${u.email}</td><td>${u.seats.join(', ')}</td><td><button data-index='${i}'>Smazat</button></td>`;
-        tbody.appendChild(tr);
+function createBlock(kind){
+  const cfg = layout[kind];
+  const block = document.createElement('div');
+  block.className = 'block ' + kind;
+  for(let r=1;r<=cfg.rows;r++){
+    for(let c=1;c<=cfg.cols;c++){
+      const id = `${cfg.prefix}${r}-${c}`;
+      const seat = document.createElement('button');
+      seat.className = 'seat';
+      seat.type = 'button';
+      seat.dataset.seat = id;
+      seat.textContent = id;
+      if(reserved.has(id)){ seat.classList.add('reserved'); seat.disabled=true; }
+      seat.addEventListener('click', ()=>{
+        if(seat.classList.contains('reserved')) return;
+        if(selected.has(id)){ selected.delete(id); seat.classList.remove('selected'); }
+        else { selected.add(id); seat.classList.add('selected'); }
+        infoEl.textContent = `Vybráno: ${selected.size}`;
       });
-      tbody.querySelectorAll('button').forEach(btn=>{
-        btn.addEventListener('click', e=>{
-          const idx = parseInt(e.target.dataset.index);
-          const users = JSON.parse(localStorage.getItem(LS_USERS)||'[]');
-          const removed = users.splice(idx,1)[0];
-          localStorage.setItem(LS_USERS, JSON.stringify(users));
-          let reservedArr = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-          reservedArr = reservedArr.filter(r=> !removed.seats.includes(r));
-          localStorage.setItem(LS_KEY, JSON.stringify(reservedArr));
-          reserved = new Set(reservedArr);
-          render();
-          renderAdmin();
-        });
-      });
+      block.appendChild(seat);
     }
+  }
+  return block;
+}
 
-    render();
+function render(){
+  theaterEl.innerHTML='';
+  theaterEl.appendChild(createBlock('left'));
+  theaterEl.appendChild(createBlock('right'));
+}
+
+formEl.addEventListener('submit', async e => {
+  e.preventDefault();
+  const user = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    email: document.getElementById('email').value,
+    seats: Array.from(selected)
+  };
+  await push(ref(db, 'reservations'), user);
+  selected.clear();
+  formEl.reset();
+  formEl.style.display = 'none';
+  successMsg.innerHTML = 'Rezervace byla úspěšně provedena!<br>Zaplaťte částku <strong>50.000,-</strong> převodem na účet John Dreilor nejpozději do 24 hodin od provedení rezervace, jinak bude zrušena.';
+  successMsg.style.display = 'block';
+  await loadReservations();
+});
+
+reserveBtn.addEventListener('click', ()=>{
+  if(selected.size===0){ alert('Vyberte alespoň jedno sedadlo.'); return; }
+  formEl.style.display='flex';
+  successMsg.style.display='none';
+});
+
+clearBtn.addEventListener('click', ()=>{ selected.clear(); render(); });
+
+adminBtn.addEventListener('click', async ()=>{
+  const password = prompt('Zadejte admin heslo:');
+  if(password !== 'APKINO14ADMIN'){ alert('Nesprávné heslo'); return; }
+  adminPanel.style.display='block';
+  const tbody = adminPanel.querySelector('tbody');
+  tbody.innerHTML='';
+  const snapshot = await get(ref(db, 'reservations'));
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    Object.entries(data).forEach(([id, u])=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${u.firstName}</td><td>${u.lastName}</td><td>${u.email}</td><td>${u.seats.join(', ')}</td><td><button data-id='${id}'>Smazat</button></td>`;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', async e=>{
+        const id = e.target.dataset.id;
+        await remove(ref(db, `reservations/${id}`));
+        await loadReservations();
+        e.target.parentElement.parentElement.remove();
+      });
+    });
+  }
+});
+
+loadReservations();
   </script>
 </body>
 </html>
