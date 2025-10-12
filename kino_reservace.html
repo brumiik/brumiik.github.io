@@ -73,7 +73,7 @@
       <input type="text" id="lastName" required>
       <label for="email">Email:</label>
       <input type="email" id="email" required>
-      <button type="submit">Odeslat rezervaci</button>
+      <button type="button" id="submitFormBtn">Odeslat rezervaci</button>
     </form>
 
     <div id="successMsg"></div>
@@ -109,6 +109,7 @@ const infoEl = document.getElementById('info');
 const reserveBtn = document.getElementById('reserveBtn');
 const clearBtn = document.getElementById('clearSelection');
 const formEl = document.getElementById('reservationForm');
+const submitFormBtn = document.getElementById('submitFormBtn');
 const successMsg = document.getElementById('successMsg');
 const adminBtn = document.getElementById('adminBtn');
 const adminPanel = document.getElementById('adminPanel');
@@ -158,8 +159,8 @@ function render(){
   theaterEl.appendChild(createBlock('right'));
 }
 
-formEl.addEventListener('submit', async e => {
-  e.preventDefault();
+submitFormBtn.addEventListener('click', async () => {
+  if(selected.size === 0) { alert('Vyberte alespoň jedno sedadlo.'); return; }
   const user = {
     firstName: document.getElementById('firstName').value,
     lastName: document.getElementById('lastName').value,
@@ -175,12 +176,7 @@ formEl.addEventListener('submit', async e => {
   await loadReservations();
 });
 
-reserveBtn.addEventListener('click', ()=>{
-  if(selected.size===0){ alert('Vyberte alespoň jedno sedadlo.'); return; }
-  formEl.style.display='flex';
-  successMsg.style.display='none';
-});
-
+reserveBtn.addEventListener('click', ()=>{ formEl.style.display='flex'; successMsg.style.display='none'; });
 clearBtn.addEventListener('click', ()=>{ selected.clear(); render(); });
 
 adminBtn.addEventListener('click', async ()=>{
