@@ -1,182 +1,632 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rezervace sedadel - Kino</title>
-  <style>
-    :root {
-      --gap: 12px;
-      --seat-size: 44px;
-      --available: #e6f7ff;
-      --selected: #60a5fa;
-      --reserved: #94a3b8;
-      --aisle-width: 28px;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    }
-    body {display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f8fafc;margin:0;padding:24px;}
-    .container {max-width:900px;width:100%;background:white;border-radius:12px;padding:20px;box-shadow:0 6px 20px rgba(2,6,23,0.06);}
-    h1{margin:0 0 10px;font-size:20px;}
-    p.lead{margin:0 0 18px;color:#475569;}
-    .screen{height:18px;background:linear-gradient(90deg,#c7e0ff,#eef6ff);border-radius:8px;text-align:center;padding:6px 10px;margin:0 auto 18px;color:#0f172a;font-weight:600;max-width:420px;}
-    .theater{display:flex;gap:var(--aisle-width);align-items:flex-start;justify-content:center;}
-    .block{display:grid;grid-auto-rows:var(--seat-size);grid-auto-columns:var(--seat-size);gap:var(--gap);padding:6px;}
-    .left{grid-template-columns:repeat(3, var(--seat-size));grid-template-rows:repeat(3, var(--seat-size));}
-    .right{grid-template-columns:repeat(4, var(--seat-size));grid-template-rows:repeat(3, var(--seat-size));}
-    .seat{width:var(--seat-size);height:var(--seat-size);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer;border:2px solid rgba(15,23,42,0.08);user-select:none;background:var(--available);transition:transform .08s ease, box-shadow .08s ease;}
-    .seat:active{transform:scale(.98);}
-    .seat.reserved{background:var(--reserved);cursor:not-allowed;opacity:0.9;}
-    .seat.selected{background:var(--selected);color:white;}
-    .legend{display:flex;gap:12px;align-items:center;margin-top:14px;}
-    .legend span{display:flex;gap:6px;align-items:center;}
-    .sw{width:20px;height:20px;border-radius:6px;}
-    .controls{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap;}
-    button{background:#0ea5a4;border:none;padding:10px 14px;border-radius:8px;color:white;font-weight:600;cursor:pointer;}
-    button.secondary{background:#64748b;}
-    .info{margin-left:auto;color:#334155;}
-    form{margin-top:20px;display:none;flex-direction:column;gap:10px;}
-    label{font-weight:600;color:#1e293b;}
-    input{padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;width:100%;max-width:300px;}
-    #successMsg{display:none;margin-top:20px;padding:15px;background:#dcfce7;border:1px solid #86efac;border-radius:8px;color:#166534;font-weight:600;}
-    #adminPanel{display:none;margin-top:25px;}
-    table{border-collapse:collapse;width:100%;margin-top:10px;}
-    th,td{border:1px solid #cbd5e1;padding:6px;text-align:left;}
-    th{background:#f1f5f9;}
-    @media (max-width:520px){.theater{gap:12px;flex-direction:column;align-items:center;}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervace sedadel v kině (s DB)</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            position: relative; 
+        }
+
+        h1, h2, h3 { text-align: center; color: #222; }
+        .movie-info { text-align: center; margin-bottom: 20px; }
+        .movie-info h2 { margin: 0; color: #007bff; }
+        .movie-info p { margin: 5px 0 0 0; font-size: 1.1em; font-weight: bold; }
+        .screen { background-color: #444; color: white; padding: 10px; margin: 20px auto; width: 70%; text-align: center; border-radius: 5px; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+        .legend { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        .legend .seat { width: 20px; height: 20px; margin: 0; cursor: default; }
+        .legend span { display: flex; align-items: center; gap: 8px; }
+        .seating-layout { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 20px; }
+        .side { display: flex; flex-direction: column; gap: 5px; }
+        .row { display: flex; gap: 5px; }
+        .seat { width: 30px; height: 30px; background-color: #4CAF50; border-radius: 5px; cursor: pointer; transition: background-color 0.2s ease; color: white; font-weight: bold; font-size: 12px; display: flex; justify-content: center; align-items: center; }
+        .seat::before { content: attr(data-seat); }
+        .seat:hover:not(.occupied):not(.selected) { background-color: #66bb6a; }
+        .seat.selected { background-color: #ffa500; }
+        .seat.occupied { background-color: #f44336; cursor: not-allowed; }
+        .walkway { font-style: italic; color: #888; writing-mode: vertical-rl; transform: rotate(180deg); }
+        .summary { text-align: center; font-size: 1.1em; font-weight: bold; margin-bottom: 20px; }
+        #total-price, #seat-count { color: #007bff; }
+        #booking-form { display: flex; flex-direction: column; gap: 15px; border-top: 1px solid #eee; padding-top: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-weight: bold; }
+        .form-group input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
+        .btn { padding: 12px 20px; font-size: 1em; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; background-color: #007bff; color: white; transition: background-color 0.2s; }
+        .btn:hover { background-color: #0056b3; }
+        .admin-btn { background-color: #6c757d; margin-top: 20px; width: 100%; }
+        .admin-btn:hover { background-color: #5a6268; }
+        
+        #admin-login-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        #admin-panel { margin-top: 20px; padding: 20px; border: 1px solid #6c757d; border-radius: 8px; background-color: #fdfdfd; }
+        #pause-btn { background-color: #ffc107; color: #333; width: 100%; margin-bottom: 15px; }
+        #pause-btn.paused { background-color: #28a745; color: white; }
+        .admin-booking { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 15px 0; margin-bottom: 15px; }
+        .admin-select-btn { background-color: #17a2b8; width: 100%; }
+        .admin-select-btn.active { background-color: #ffc107; color: #333; }
+        #admin-confirm-btn { background-color: #28a745; width: 100%; margin-top: 10px; }
+        #reservation-list { list-style-type: none; padding: 0; }
+        .reservation-item { background: #eee; padding: 15px; margin-top: 10px; border-radius: 5px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; border-left: 5px solid #f44336; }
+        .reservation-item.paid { border-left-color: #4CAF50; }
+        .reservation-item .info { display: flex; flex-direction: column; flex-basis: 70%; }
+        .reservation-item .info strong { font-size: 1.1em; }
+        .reservation-item .info span { color: #555; font-size: 0.9em; }
+        .reservation-item .info .reservation-time {
+            font-size: 0.85em;
+            color: #333;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        
+        .reservation-item .actions { display: flex; flex-direction: column; gap: 5px; }
+        .reservation-item .btn-action { border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 0.8em; color: white; }
+        .reservation-item .toggle-payment-btn { background-color: #28a745; }
+        .reservation-item.paid .toggle-payment-btn { background-color: #ffc107; color: #333; }
+        .reservation-item .cancel-btn { background: #dc3545; }
+
+        .hidden {
+            display: none;
+        }
+
+        .notification {
+            padding: 15px 40px 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            position: relative;
+            white-space: pre-wrap;
+        }
+        .notification.success { background-color: #4CAF50; }
+        .notification.error { background-color: #f44336; }
+        #notification-close-btn {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        #notification-close-btn:hover { opacity: 1; }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>Rezervace sedadel — Kino</h1>
-<p class="lead">Rozložení: vlevo 3×3, ulička, vpravo 4×3. Kliknutím vyberte sedadla a vyplňte formulář.</p>
-<div class="screen">PLÁTNO</div>
-<div class="theater" id="theater"></div>
-<div class="legend">
-<span><i class="sw" style="background:var(--available);border:2px solid rgba(15,23,42,0.08)"></i> Volné</span>
-<span><i class="sw" style="background:var(--selected)"></i> Vybrané</span>
-<span><i class="sw" style="background:var(--reserved)"></i> Rezervované</span>
-</div>
-<div class="controls">
-<button id="reserveBtn">Rezervovat</button>
-<button id="clearSelection" class="secondary">Zrušit výběr</button>
-<button id="adminBtn" class="secondary">Admin panel</button>
-<div class="info" id="info">Vybráno: 0</div>
-</div>
-<form id="reservationForm">
-<label for="firstName">Jméno:</label>
-<input type="text" id="firstName" required>
-<label for="lastName">Příjmení:</label>
-<input type="text" id="lastName" required>
-<label for="email">Email:</label>
-<input type="email" id="email" required>
-<button type="button" id="submitFormBtn">Odeslat rezervaci</button>
-</form>
-<div id="successMsg"></div>
-<div id="adminPanel">
-<h2>Administrátor — seznam rezervací</h2>
-<table id="adminTable">
-<thead><tr><th>Jméno</th><th>Příjmení</th><th>Email</th><th>Sedadla</th><th>Akce</th></tr></thead>
-<tbody></tbody>
-</table>
-</div>
-</div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getDatabase, ref, get, push, remove, onValue } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC8pllurfqrWcp8vLU7TcSPv3mMx1KyX9E",
-  authDomain: "kino-rezervace.firebaseapp.com",
-  databaseURL: "https://kino-rezervace-default-rtdb.firebaseio.com",
-  projectId: "kino-rezervace",
-  storageBucket: "kino-rezervace.firebasestorage.app",
-  messagingSenderId: "674656321157",
-  appId: "1:674656321157:web:97385b4920e5ba190773ec",
-  measurementId: "G-X6NM789YW5"
-};
+    <div class="container">
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+        <div id="notification-banner" class="notification hidden">
+            <span id="notification-message"></span>
+            <button id="notification-close-btn">&times;</button>
+        </div>
 
-const theaterEl = document.getElementById('theater');
-const infoEl = document.getElementById('info');
-const reserveBtn = document.getElementById('reserveBtn');
-const clearBtn = document.getElementById('clearSelection');
-const formEl = document.getElementById('reservationForm');
-const submitFormBtn = document.getElementById('submitFormBtn');
-const successMsg = document.getElementById('successMsg');
-const adminBtn = document.getElementById('adminBtn');
-const adminPanel = document.getElementById('adminPanel');
+        <h1>Rezervace sedadel v kině</h1>
+        <div class="movie-info">
+            <h2>Duna: Část druhá</h2>
+            <p>Dnes, 8. 11. 2025 v 19:30</p>
+        </div>
+        
+        <div class="screen">Plátno</div>
 
-const layout = { left:{cols:3,rows:3,prefix:'L'}, right:{cols:4,rows:3,prefix:'R'} };
-let reserved = new Set();
-let selected = new Set();
+        <p class="legend">
+            <span class="seat"></span> Volné
+            <span class="seat selected"></span> Vybrané 
+            <span class="seat occupied"></span> Rezervované
+        </p>
 
-function render(){
-  theaterEl.innerHTML='';
-  for(const side in layout){
-    const cfg = layout[side];
-    const block = document.createElement('div');
-    block.className='block '+side;
-    for(let r=1;r<=cfg.rows;r++){
-      for(let c=1;c<=cfg.cols;c++){
-        const id=`${cfg.prefix}${r}-${c}`;
-        const seat=document.createElement('button');
-        seat.type='button';
-        seat.dataset.seat=id;
-        seat.className='seat';
-        seat.textContent=id;
-        if(reserved.has(id)){seat.classList.add('reserved');seat.disabled=true;}
-        seat.addEventListener('click',()=>{
-          if(seat.classList.contains('reserved')) return;
-          if(selected.has(id)){selected.delete(id);seat.classList.remove('selected');}
-          else{selected.add(id);seat.classList.add('selected');}
-          infoEl.textContent=`Vybráno: ${selected.size}`;
+        <div class="seating-layout">
+            <div class="side" id="left-side">
+                <div class="row">
+                    <div class="seat" data-seat="1"></div>
+                    <div class="seat" data-seat="2"></div>
+                    <div class="seat" data-seat="3"></div>
+                </div>
+                <div class="row">
+                    <div class="seat" data-seat="8"></div>
+                    <div class="seat" data-seat="9"></div>
+                    <div class="seat" data-seat="10"></div>
+                </div>
+                <div class="row">
+                    <div class="seat" data-seat="15"></div>
+                    <div class="seat" data-seat="16"></div>
+                    <div class="seat" data-seat="17"></div>
+                </div>
+            </div>
+            <div class="walkway">Ulička</div>
+            <div class="side" id="right-side">
+                <div class="row">
+                    <div class="seat" data-seat="4"></div>
+                    <div class="seat" data-seat="5"></div>
+                    <div class="seat" data-seat="6"></div>
+                    <div class="seat" data-seat="7"></div>
+                </div>
+                <div class="row">
+                    <div class="seat" data-seat="11"></div>
+                    <div class="seat" data-seat="12"></div>
+                    <div class="seat" data-seat="13"></div>
+                    <div class="seat" data-seat="14"></div>
+                </div>
+                <div class="row">
+                    <div class="seat" data-seat="18"></div>
+                    <div class="seat" data-seat="19"></div>
+                    <div class="seat" data-seat="20"></div>
+                    <div class="seat" data-seat="21"></div> 
+                </div>
+            </div>
+        </div>
+
+        <p class="summary">
+            Vybrali jste <span id="seat-count">0</span> sedadel.
+            Celková cena: <span id="total-price">0</span> Kč.
+        </p>
+
+        <form id="booking-form">
+            <h3>Kontaktní údaje</h3>
+            <div class="form-group">
+                <label for="name">Jméno:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="surname">Příjmení:</label>
+                <input type="text" id="surname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Telefon:</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <button type="submit" class="btn">Rezervovat</button>
+        </form>
+
+        <button id="admin-login-btn" class="btn admin-btn">Admin Panel</button>
+
+        <div id="admin-login-section" class="hidden">
+            <form id="admin-login-form">
+                <h3>Přihlášení pro adminy</h3>
+                <div class="form-group">
+                    <label for="admin-password-input">Zadejte heslo:</label>
+                    <input type="password" id="admin-password-input">
+                </div>
+                <button type="submit" class="btn">Potvrdit</button>
+            </form>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <h2>Admin Panel</h2>
+            <button id="pause-btn" class="btn">Pozastavit rezervace</button>
+            <div class="admin-booking">
+                <h3>Admin blokace sedadel</h3>
+                <button id="admin-select-btn" class="btn admin-select-btn">Aktivovat admin výběr</button>
+                <button id="admin-confirm-btn" class="btn hidden">Potvrdit admin blokaci</button>
+            </div>
+            <h3>Seznam rezervací (z databáze)</h3>
+            <ul id="reservation-list"></ul>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Konstanty ---
+        const SEAT_PRICE = 50000;
+        const ADMIN_PASSWORD = "APKINO14";
+        
+        // --- PŘIPOJENÍ K SUPABASE ---
+        const SUPABASE_URL = 'https://jjhzaudlooaapqwdiack.supabase.co';
+        // ZDE JE TVŮJ TAJNÝ KLÍČ:
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqaHphdWRsb29hYXBxd2RpYWNrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjYxODA0NCwiZXhwIjoyMDc4MTk0MDQ0fQ.BvPF3-3Q2wHdL-E8x9PgA2Eq06Di1KegAddXMmLbYV8';
+        
+        const { createClient } = supabase; 
+        const supa = createClient(SUPABASE_URL, SUPABASE_KEY); 
+        // --- KONEC PŘIPOJENÍ ---
+
+        // --- Selektory ---
+        const seatingLayout = document.querySelector('.seating-layout');
+        const seatCountEl = document.getElementById('seat-count');
+        const totalPriceEl = document.getElementById('total-price');
+        const bookingForm = document.getElementById('booking-form');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const adminLoginSection = document.getElementById('admin-login-section');
+        const adminLoginForm = document.getElementById('admin-login-form');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminPanel = document.getElementById('admin-panel');
+        const pauseBtn = document.getElementById('pause-btn');
+        const reservationList = document.getElementById('reservation-list');
+        const adminSelectBtn = document.getElementById('admin-select-btn');
+        const adminConfirmBtn = document.getElementById('admin-confirm-btn');
+        const notificationBanner = document.getElementById('notification-banner');
+        const notificationMessage = document.getElementById('notification-message');
+        const notificationCloseBtn = document.getElementById('notification-close-btn');
+
+        // --- Stavové proměnné ---
+        let selectedSeats = [];
+        let isPaused = false;
+        let isAdminSelecting = false;
+
+        // --- OVLÁDÁNÍ OZNÁMENÍ ---
+        function showAlert(message, type = 'error') {
+            notificationMessage.innerText = message;
+            notificationBanner.classList.remove('success', 'error', 'hidden');
+            notificationBanner.classList.add(type);
+        }
+
+        notificationCloseBtn.addEventListener('click', () => {
+            notificationBanner.classList.add('hidden');
         });
-        block.appendChild(seat);
-      }
-    }
-    theaterEl.appendChild(block);
-  }
-}
 
-function loadReservations(){
-  const reservationsRef = ref(db,'reservations');
-  onValue(reservationsRef,(snapshot)=>{
-    reserved.clear();
-    snapshot.forEach(snap=>{
-      snap.val().seats.forEach(seatId=>reserved.add(seatId));
+        // --- HLAVNÍ FUNKCE APLIKACE ---
+
+        function updateSummary() {
+            const count = selectedSeats.length;
+            const total = count * SEAT_PRICE;
+            seatCountEl.innerText = count;
+            totalPriceEl.innerText = total.toLocaleString('cs-CZ');
+        }
+
+        function toggleSeatSelection(seat) {
+            if (isPaused && !isAdminSelecting) {
+                showAlert('Rezervace jsou momentálně pozastaveny.', 'error');
+                return;
+            }
+            seat.classList.toggle('selected');
+            selectedSeats = Array.from(seatingLayout.querySelectorAll('.seat.selected'));
+            updateSummary();
+        }
+
+        function obarviSedadlo(seatId) {
+            const seat = document.querySelector(`.seat[data-seat="${seatId}"]`);
+            if (seat) {
+                seat.classList.remove('selected');
+                seat.classList.add('occupied');
+            }
+        }
+
+        function addReservationToList(rezervace) {
+            const li = document.createElement('li');
+            li.classList.add('reservation-item');
+            if (rezervace.zaplaceno) {
+                li.classList.add('paid');
+            }
+            
+            li.dataset.dbId = rezervace.id;
+            
+            const sedadla = rezervace.sedadla || []; 
+            li.dataset.sedadla = JSON.stringify(sedadla); 
+
+            const seatIds = sedadla.join(', ');
+            
+            const timestamp = rezervace.cas_rezervace 
+                ? new Date(rezervace.cas_rezervace).toLocaleString('cs-CZ')
+                : new Date().toLocaleString('cs-CZ');
+
+            li.innerHTML = `
+                <div class="info">
+                    <strong>${rezervace.jmeno} ${rezervace.prijmeni}</strong>
+                    <span>Email: ${rezervace.email}</span>
+                    <span>Sedadla: ${seatIds}</span>
+                    <span class="reservation-time">Rezervováno: ${timestamp}</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-action toggle-payment-btn" data-reservation-id="${rezervace.id}">${rezervace.zaplaceno ? 'Označit jako nezaplacené' : 'Označit jako zaplacené'}</button>
+                    <button class="btn-action cancel-btn" data-reservation-id="${rezervace.id}">Zrušit</button>
+                </div>
+            `;
+            reservationList.appendChild(li);
+        }
+
+        // TATO FUNKCE ZLOBÍ, VOLÁME JI PROTO OPATRNĚ
+        async function nactiRezervaceProAdmina() {
+            try {
+                const { data, error } = await supa
+                    .from('rezervace')
+                    .select('*')
+                    .order('cas_rezervace', { ascending: false }); 
+
+                if (error) {
+                    showAlert('Chyba při načítání rezervací z databáze!', 'error');
+                    console.error("CHYBA SUPABASE (načítání):", error);
+                    return; 
+                }
+                
+                // POKUD ČTENÍ PROJDE, TOTO SE STANE:
+                reservationList.innerHTML = ''; 
+                const allSeats = seatingLayout.querySelectorAll('.seat');
+                allSeats.forEach(seat => {
+                    seat.classList.remove('occupied');
+                });
+                
+                for (const rezervace of data) {
+                    addReservationToList(rezervace); 
+                    if (rezervace.sedadla) { 
+                        rezervace.sedadla.forEach(seatId => {
+                            obarviSedadlo(seatId);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Kritická chyba při načítání:", e);
+                showAlert("Nepodařilo se načíst existující rezervace.", "error");
+            }
+        }
+        
+        async function handleBooking(event) {
+            event.preventDefault(); 
+            if (selectedSeats.length === 0) {
+                showAlert('Musíte si vybrat alespoň jedno sedadlo.', 'error');
+                return;
+            }
+            if (isPaused) {
+                showAlert('Rezervace jsou momentálně pozastaveny.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const seatIds = selectedSeats.map(s => s.dataset.seat);
+            const totalCost = selectedSeats.length * SEAT_PRICE;
+            
+            const novaRezervace = { 
+                jmeno: name, 
+                prijmeni: surname, 
+                email: email, 
+                telefon: phone,
+                sedadla: seatIds
+            };
+            
+            const { error } = await supa
+                .from('rezervace')
+                .insert([ novaRezervace ]); 
+
+            if (error) {
+                showAlert('Rezervace selhala: ' + error.message, 'error');
+                return;
+            }
+            
+            // RUČNĚ obarvíme sedadla
+            selectedSeats.forEach(seat => obarviSedadlo(seat.dataset.seat));
+            
+            // RUČNĚ vyčistíme formulář
+            selectedSeats = [];
+            bookingForm.reset();
+            updateSummary();
+            
+            // RUČNĚ přidáme rezervaci do seznamu
+            novaRezervace.id = "Nové"; // Jen dočasný text
+            novaRezervace.cas_rezervace = new Date().toISOString(); 
+            novaRezervace.zaplaceno = false;
+            addReservationToList(novaRezervace);
+            
+            // Ukážeme úspěch
+            const alertMessage = `Rezervace byla úspěšně provedena.\n\nZaplaťte ${totalCost.toLocaleString('cs-CZ')} Kč nejpozději do 24 hodin na účet John Dreilor, jinak bude rezervace zrušena.`;
+            showAlert(alertMessage, 'success');
+        }
+
+        async function cancelReservation(dbId, liElement) {
+            const { error } = await supa
+                .from('rezervace')
+                .delete()
+                .eq('id', dbId); 
+
+            if (error) {
+                showAlert('Chyba při mazání rezervace: ' + error.message, 'error');
+                return;
+            }
+
+            const seatIdsToFree = JSON.parse(liElement.dataset.sedadla || '[]');
+            seatIdsToFree.forEach(seatId => {
+                const seat = document.querySelector(`.seat[data-seat="${seatId}"]`);
+                if (seat) {
+                    seat.classList.remove('occupied');
+                }
+            });
+            
+            liElement.remove();
+            showAlert(`Rezervace ${dbId} byla zrušena.`, 'success');
+        }
+
+        async function togglePaymentStatus(dbId, liElement) {
+            const isPaid = liElement.classList.contains('paid');
+            const newStatus = !isPaid; 
+
+            const { error } = await supa
+                .from('rezervace')
+                .update({ zaplaceno: newStatus })
+                .eq('id', dbId);
+
+            if (error) {
+                showAlert('Chyba při změně stavu platby: ' + error.message, 'error');
+                return;
+            }
+
+            liElement.classList.toggle('paid', newStatus);
+            const btn = liElement.querySelector('.toggle-payment-btn');
+            btn.innerText = newStatus ? 'Označit jako nezaplacené' : 'Označit jako zaplacené';
+        }
+
+        // --- ADMIN FUNKCE ---
+
+        function handleAdminLogin() {
+            adminLoginSection.classList.toggle('hidden'); 
+            if (!adminLoginSection.classList.contains('hidden')) {
+                adminPasswordInput.focus();
+            }
+        }
+        
+        // === TOTO JE FINÁLNÍ OPRAVA ===
+        adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = adminPasswordInput.value;
+            if (password === ADMIN_PASSWORD) {
+                adminPanel.classList.remove('hidden'); 
+                adminLoginSection.classList.add('hidden'); 
+                
+                // TOTO JSEM SMAZAL/ZAKOMENTOVAL - ZPŮSOBOVALO TO MIZENÍ
+                // nactiRezervaceProAdmina(); 
+                
+            } else {
+                showAlert('Špatné heslo!', 'error');
+            }
+            adminPasswordInput.value = ''; 
+        });
+        // === KONEC OPRAVY ===
+
+        function togglePause() {
+            isPaused = !isPaused; 
+            if (isPaused) {
+                pauseBtn.innerText = 'Obnovit rezervace';
+                pauseBtn.classList.add('paused');
+                showAlert('Rezervace byly pozastaveny.', 'success');
+            } else {
+                pauseBtn.innerText = 'Pozastavit rezervace';
+                pauseBtn.classList.remove('paused');
+                showAlert('Rezervace byly obnoveny.', 'success');
+            }
+        }
+
+        function toggleAdminSelectMode() {
+            isAdminSelecting = !isAdminSelecting;
+            if (isAdminSelecting) {
+                adminSelectBtn.innerText = 'Zrušit admin výběr';
+                adminSelectBtn.classList.add('active');
+                adminConfirmBtn.classList.remove('hidden');
+                showAlert('Admin výběr aktivován.', 'success');
+            } else {
+                adminSelectBtn.innerText = 'Aktivovat admin výběr';
+                adminSelectBtn.classList.remove('active');
+                adminConfirmBtn.classList.add('hidden');
+                selectedSeats.forEach(seat => seat.classList.remove('selected'));
+                selectedSeats = [];
+                updateSummary();
+            }
+        }
+
+        async function confirmAdminBooking() {
+            if (selectedSeats.length === 0) {
+                showAlert('Nevybrali jste žádná sedadla k blokaci.', 'error');
+                return;
+            }
+            const seatIds = selectedSeats.map(s => s.dataset.seat);
+            
+            const novaRezervace = { 
+                jmeno: 'ADMIN', 
+                prijmeni: 'BLOKACE', 
+                email: 'admin@kino.cz', 
+                telefon: 'N/A',
+                sedadla: seatIds
+            };
+            
+            const { error } = await supa
+                .from('rezervace')
+                .insert([novaRezervace]);
+
+            if (error) {
+                showAlert('Admin blokace selhala: ' + error.message, 'error');
+                return;
+            }
+
+            // Ruční přidání a obarvení
+            novaRezervace.id = "Nové";
+            novaRezervace.cas_rezervace = new Date().toISOString();
+            novaRezervace.zaplaceno = false;
+            addReservationToList(novaRezervace);
+            selectedSeats.forEach(seat => obarviSedadlo(seat.dataset.seat));
+            
+            selectedSeats = [];
+            updateSummary();
+            toggleAdminSelectMode(); 
+            showAlert(`Admin úspěšně zablokoval sedadla: ${seatIds}`, 'success');
+        }
+
+        // --- CENTRÁLNÍ OVLADAČE (EVENT LISTENERY) ---
+
+        function handleSeatClick(e) {
+            if (e.target.classList.contains('seat') && !e.target.classList.contains('occupied')) {
+                toggleSeatSelection(e.target);
+            }
+        }
+
+        seatingLayout.addEventListener('click', handleSeatClick);
+        bookingForm.addEventListener('submit', handleBooking); 
+        adminLoginBtn.addEventListener('click', handleAdminLogin);
+        pauseBtn.addEventListener('click', togglePause);
+        adminSelectBtn.addEventListener('click', toggleAdminSelectMode);
+        adminConfirmBtn.addEventListener('click', confirmAdminBooking); 
+
+        reservationList.addEventListener('click', async (e) => {
+            const button = e.target.closest('button');
+            if (!button) return; 
+            
+            const liElement = button.closest('.reservation-item');
+            if (!liElement) return;
+
+            const dbId = liElement.dataset.dbId; 
+            
+            if (dbId === "Nové" && (button.classList.contains('cancel-btn') || button.classList.contains('toggle-payment-btn'))) {
+                showAlert("Tuto rezervaci nelze upravit ani smazat, obnovte prosím stránku.", "error");
+                return;
+            }
+
+            if (button.classList.contains('cancel-btn')) {
+                await cancelReservation(dbId, liElement); 
+            }
+            
+            if (button.classList.contains('toggle-payment-btn')) {
+                await togglePaymentStatus(dbId, liElement);
+            }
+        });
+
+        // --- Start ---
+        updateSummary(); 
+        
+        // Zkusíme načíst rezervace, ale když to selže, neshodíme zbytek skriptu
+        try {
+            // nactiRezervacePriStartu(); // TOTO JE SCHVÁLNĚ VYPNUTÉ, PROTOŽE ZLOBÍ
+        } catch (e) {
+            console.error("Kritická chyba při startu:", e);
+            showAlert("Nepodařilo se načíst existující rezervace.", "error");
+        }
+
     });
-    render();
-  },(err)=>{console.error(err); render();});
-}
+</script>
 
-document.addEventListener('DOMContentLoaded',()=>{
-  loadReservations();
-});
-
-reserveBtn.addEventListener('click',()=>{ formEl.style.display='flex'; successMsg.style.display='none'; });
-clearBtn.addEventListener('click',()=>{ selected.clear(); render(); });
-
-submitFormBtn.addEventListener('click',async()=>{
-  if(selected.size===0){alert('Vyberte alespoň jedno sedadlo.');return;}
-  const user={
-    firstName: document.getElementById('firstName').value,
-    lastName: document.getElementById('lastName').value,
-    email: document.getElementById('email').value,
-    seats: Array.from(selected)
-  };
-  try{
-    await push(ref(db,'reservations'),user);
-    selected.clear(); formEl.reset(); formEl.style.display='none';
-    successMsg.innerHTML='Rezervace byla úspěšně provedena!<br>Zaplaťte částku <strong>50.000,-</strong> převodem na účet John Dreilor nejpozději do 24 hodin od provedení rezervace, jinak bude zrušena.';
-    successMsg.style.display='block';
-  }catch(err){console.error(err); alert('Chyba při odesílání rezervace');}
-});
-
-adminBtn.addEventListener('click',async()=>{
-  const pw=prompt('Zadejte admin heslo:');
-  if(pw!=='APKINO14ADMIN'){alert('Nesprávné heslo'); return;}
-  adminPanel.style.display='block';
-  const tbody=adminPanel.querySelector('tbody');
-  tbody.innerHTML='
+</body>
+</html>
