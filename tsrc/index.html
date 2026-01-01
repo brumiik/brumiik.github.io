@@ -84,40 +84,24 @@
 
 .v-img {
     width: 100%;
-    height: 200px; /* Pevná výška horní části */
+    height: 200px; 
     background: #1a1a1a;
     position: relative;
-    overflow: hidden; /* DŮLEŽITÉ: Vše, co vyčnívá, se skryje */
+    overflow: hidden; 
 }
 
 .v-img img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* DŮLEŽITÉ: Obrázek vyplní prostor bez deformace */
+    object-fit: cover; 
     display: block;
 }
 
 .v-info {
     padding: 20px;
-    background: var(--card-bg); /* Zajistí, že text má své pozadí */
+    background: var(--card-bg); 
 }
-        let vybranaDivize = ""; 
 
-function openForm(t) {
-    const section = document.getElementById('form-section');
-    const title = document.getElementById('form-title');
-
-    if (section.style.display === 'block' && vybranaDivize === t) {
-        section.style.display = 'none';
-        vybranaDivize = ""; // Resetuj výběr
-    } else {
-        // Jinak ho otevři/přepni na novou divizi
-        vybranaDivize = t; 
-        section.style.display = 'block';
-        title.innerText = 'PŘIHLÁŠKA: ' + t.toUpperCase();
-        section.scrollIntoView({ behavior: 'smooth' });
-    }
-}
     </style>
 </head>
 <body>
@@ -471,14 +455,24 @@ function openForm(t) {
 <footer>&copy; 2020 - 2026 Technické služby Red County</footer>
 
 <script>
-    let vybranaDivize = ""; 
+let vybranaDivize = ""; 
 
-    function openForm(t) {
+function openForm(t) {
+    const section = document.getElementById('form-section');
+    const title = document.getElementById('form-title');
+
+
+    if (section.style.display === 'block' && vybranaDivize === t) {
+        section.style.display = 'none';
+        vybranaDivize = ""; 
+    } else {
+
         vybranaDivize = t; 
-        document.getElementById('form-section').style.display = 'block';
-        document.getElementById('form-title').innerText = 'PŘIHLÁŠKA: ' + t.toUpperCase();
-        document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+        section.style.display = 'block';
+        title.innerText = 'PŘIHLÁŠKA: ' + t.toUpperCase();
+        section.scrollIntoView({ behavior: 'smooth' });
     }
+}
 
     const webhookTS = "https://discord.com/api/webhooks/1456349707696865452/OqWeYEyuE9WOA7P16t5r9JEuSYNHw6MjUR3KgmCSNngvu8RNz5k-Om9CjybwbW3nhbFV"; 
     const webhookParky = "https://discord.com/api/webhooks/1456349707696865452/OqWeYEyuE9WOA7P16t5r9JEuSYNHw6MjUR3KgmCSNngvu8RNz5k-Om9CjybwbW3nhbFV";
@@ -542,5 +536,6 @@ function openForm(t) {
 </body>
 
 </html>
+
 
 
