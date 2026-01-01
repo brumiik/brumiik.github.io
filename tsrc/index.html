@@ -101,6 +101,23 @@
     padding: 20px;
     background: var(--card-bg); /* Zajistí, že text má své pozadí */
 }
+        let vybranaDivize = ""; 
+
+function openForm(t) {
+    const section = document.getElementById('form-section');
+    const title = document.getElementById('form-title');
+
+    if (section.style.display === 'block' && vybranaDivize === t) {
+        section.style.display = 'none';
+        vybranaDivize = ""; // Resetuj výběr
+    } else {
+        // Jinak ho otevři/přepni na novou divizi
+        vybranaDivize = t; 
+        section.style.display = 'block';
+        title.innerText = 'PŘIHLÁŠKA: ' + t.toUpperCase();
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+}
     </style>
 </head>
 <body>
@@ -525,4 +542,5 @@
 </body>
 
 </html>
+
 
