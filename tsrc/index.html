@@ -305,7 +305,7 @@
 
     .table-container {
         width: 100%;
-        overflow-x: auto; /* Zajišťuje responzivitu na mobilu */
+        overflow-x: auto; 
     }
 
     table {
@@ -483,8 +483,8 @@ function openForm(t) {
     }
 }
 
-    const webhookTS = "https://discord.com/api/webhooks/1456349707696865452/OqWeYEyuE9WOA7P16t5r9JEuSYNHw6MjUR3KgmCSNngvu8RNz5k-Om9CjybwbW3nhbFV"; 
-    const webhookParky = "https://discord.com/api/webhooks/1456349707696865452/OqWeYEyuE9WOA7P16t5r9JEuSYNHw6MjUR3KgmCSNngvu8RNz5k-Om9CjybwbW3nhbFV";
+    const webhookTS = "https://discord.com/api/webhooks/1009497018944720997/-ur-qc6_z0EdKwJby1be-mzKbRm99IeVphR8-ApKCjrrH5-adVQxSP_sAiGTwJN7a9A0"; 
+    const webhookParky = "https://discord.com/api/webhooks/1009497018944720997/-ur-qc6_z0EdKwJby1be-mzKbRm99IeVphR8-ApKCjrrH5-adVQxSP_sAiGTwJN7a9A0";
 
     document.getElementById('applyForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -501,11 +501,11 @@ function openForm(t) {
         const hodnotaPravda = document.querySelector('input[name="pravda"]:checked')?.value || "NEUAVEDENO";
 
         const payload = {
-            username: "TSRC Náborový Bot",
-            avatar_url: "https://i.imgur.com/4E7579E.png", // Volitelné: ikona bota
+            username: "Technické služby Red County",
+            avatar_url: "", 
             embeds: [{
                 title: "📩 NOVÁ PŘIHLÁŠKA: " + vybranaDivize.toUpperCase(),
-                color: (vybranaDivize === 'Správa parků') ? 3066993 : 39214, // Zelená pro parky, Neonová pro TS
+                color: (vybranaDivize === 'Správa parků') ? 3066993 : 39214, 
                 fields: [
                     { name: "👤 Jméno a příjmení", value: e.target[0].value, inline: true },
                     { name: "📅 Datum narození", value: e.target[1].value, inline: true },
@@ -533,7 +533,7 @@ function openForm(t) {
         .then(() => {
             alert('Přihláška byla úspěšně odeslána k rukám vedení!');
             e.target.reset(); // Vyčistí formulář
-            document.getElementById('form-section').style.display = 'none'; // Skryje formulář
+            document.getElementById('form-section').style.display = 'none'; 
         })
         .catch(err => {
             alert('Chyba při odesílání! Zkontrolujte internet nebo URL webhooku.');
@@ -545,6 +545,7 @@ function openForm(t) {
 </body>
 
 </html>
+
 
 
 
