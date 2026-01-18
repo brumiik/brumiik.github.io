@@ -45,14 +45,16 @@
 
         .fleet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         .v-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; }
-        .v-img { width: 100%; height: 200px; background: #1a1a1a; position: relative; }
+        .v-img { width: 100%; height: 200px; background: #1a1a1a; position: relative; overflow: hidden; }
+        .v-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .badge { position: absolute; top: 15px; right: 15px; background: var(--neon-green); color: black; padding: 5px 12px; font-size: 0.7rem; font-weight: 900; border-radius: 5px; }
-        .v-info { padding: 30px; }
+        .v-info { padding: 30px; background: var(--card-bg); }
         .v-info h3 { font-size: 1.1rem; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
 
         .job-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .job-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 25px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .job-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 25px; text-align: center; cursor: pointer; transition: 0.3s; user-select: none; }
         .job-card:hover { border-color: var(--neon-green); transform: translateY(-10px); }
+        .job-card:active { transform: scale(0.95); }
 
         #form-section { display: none; margin-top: 40px; padding: 40px; background: var(--card-bg); border-radius: 25px; border: 1px solid var(--neon-green); animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -80,37 +82,66 @@
         .radio-group input { display: none; }
         .radio-group input:checked + .radio-btn { background: var(--neon-green); color: black; border-color: var(--neon-green); font-weight: 900; }
 
+        /* Styles for Pricelist */
+        .pricelist-section { padding: 100px 8% 50px; }
+        .category-group { margin-bottom: 50px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 25px; overflow: hidden; }
+        .category-title { background: rgba(57, 255, 20, 0.1); padding: 20px 30px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; }
+        .category-title h3 { color: var(--neon-green); text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { color: var(--neon-green); font-size: 0.8rem; text-transform: uppercase; padding: 15px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        td { padding: 15px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+        .price-tag { font-weight: 700; color: white; }
+        .validity-info { text-align: center; color: var(--text-gray); font-size: 0.8rem; margin-bottom: 40px; }
+
+        /* Styles for Map */
+        #map-wrapper {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+
+        #map-canvas {
+            width: 100%;
+            height: 100%;
+            background: url('https://artic.leosight.cz/design/mapa/tiles/water.png');
+        }
+
+        #message {
+            display: none;
+            font-family: 'Inter', sans-serif;
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(10px);
+            color: var(--neon-green);
+            padding: 1.5rem;
+            font-size: 1rem;
+            position: absolute;
+            left: 2rem;
+            bottom: 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+            max-width: 400px;
+            z-index: 99;
+        }
+
+        #message strong {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
         footer { padding: 50px 8%; text-align: center; border-top: 1px solid var(--border-color); color: #444; font-size: 0.8rem; }
-
-.v-img {
-    width: 100%;
-    height: 200px; 
-    background: #1a1a1a;
-    position: relative;
-    overflow: hidden; 
-}
-
-.v-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    display: block;
-}
-
-.v-info {
-    padding: 20px;
-    background: var(--card-bg); 
-}
-        .job-card {
-    cursor: pointer;
-    user-select: none; 
-    transition: 0.3s all ease;
-}
-
-.job-card:active {
-    transform: scale(0.95); 
-}
-
     </style>
 </head>
 <body>
@@ -157,52 +188,50 @@
 <section class="fleet">
     <div class="section-header"><h2>VOZOVÝ <span>PARK</span></h2><div class="line"></div></div>
     <div class="fleet-grid">
-<div class="fleet-grid">
-    <div class="v-card">
-        <div class="v-img"><span class="badge">VTS</span><img src="https://i.imgur.com/fAfXxW9.png" alt="VW Cravelle"></div>
-        <div class="v-info"><h3>2016 VW Caravelle 2.0TDI</h3><p>Vedení technických služeb</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">ČPK</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Citycat"></div>
-        <div class="v-info"><h3>2020 Citycat 2020XL</h3><p>Čistič pozemních komunikací</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">ČPJ</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Chevrolet Cheyenne"></div>
-        <div class="v-info"><h3>1994 Chevrolet Cheyenne</h3><p>Čistící pohotovostní jednotka</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">APJ</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Mack Vision"></div>
-        <div class="v-info"><h3>2001 Mack Vision CX613</h3><p>Akutní převážecí jednotka</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">DV</span><img src="https://i.imgur.com/fAfXxW9.png" alt="John Deere"></div>
-        <div class="v-info"><h3>2020 John Deere X950R</h3><p>Drtič vegetace</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">PHM</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford E250"></div>
-        <div class="v-info"><h3>1984 Ford E250 Boxtruck</h3><p>Převoz hmotných materiálů</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">TOW</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford F100"></div>
-        <div class="v-info"><h3>1958 Ford F100 Towtruck</h3><p>Towtruck</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">RNG</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford Explorer"></div>
-        <div class="v-info"><h3>2012 Ford Explorer PD</h3><p>Ranger Unit</p></div>
-    </div>
-    
-    <div class="v-card">
-        <div class="v-img"><span class="badge">RNG</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford Raptor"></div>
-        <div class="v-info"><h3>2015 Ford F-150 Raptor</h3><p>Ranger Unit</p></div>
-    </div>
-</div>
+        <div class="v-card">
+            <div class="v-img"><span class="badge">VTS</span><img src="https://i.imgur.com/fAfXxW9.png" alt="VW Cravelle"></div>
+            <div class="v-info"><h3>2016 VW Caravelle 2.0TDI</h3><p>Vedení technických služeb</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">ČPK</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Citycat"></div>
+            <div class="v-info"><h3>2020 Citycat 2020XL</h3><p>Čistič pozemních komunikací</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">ČPJ</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Chevrolet Cheyenne"></div>
+            <div class="v-info"><h3>1994 Chevrolet Cheyenne</h3><p>Čistící pohotovostní jednotka</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">APJ</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Mack Vision"></div>
+            <div class="v-info"><h3>2001 Mack Vision CX613</h3><p>Akutní převážecí jednotka</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">DV</span><img src="https://i.imgur.com/fAfXxW9.png" alt="John Deere"></div>
+            <div class="v-info"><h3>2020 John Deere X950R</h3><p>Drtič vegetace</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">PHM</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford E250"></div>
+            <div class="v-info"><h3>1984 Ford E250 Boxtruck</h3><p>Převoz hmotných materiálů</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">TOW</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford F100"></div>
+            <div class="v-info"><h3>1958 Ford F100 Towtruck</h3><p>Towtruck</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">RNG</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford Explorer"></div>
+            <div class="v-info"><h3>2012 Ford Explorer PD</h3><p>Ranger Unit</p></div>
+        </div>
+        
+        <div class="v-card">
+            <div class="v-img"><span class="badge">RNG</span><img src="https://i.imgur.com/fAfXxW9.png" alt="Ford Raptor"></div>
+            <div class="v-info"><h3>2015 Ford F-150 Raptor</h3><p>Ranger Unit</p></div>
+        </div>
     </div>
 </section>
 
@@ -273,81 +302,6 @@
         </form>
     </div>
 </section>
-
-<style>
-    .pricelist-section {
-        padding: 100px 8% 50px;
-    }
-
-    .category-group {
-        margin-bottom: 50px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 25px;
-        overflow: hidden;
-    }
-
-    .category-title {
-        background: rgba(57, 255, 20, 0.1);
-        padding: 20px 30px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .category-title h3 {
-        color: var(--neon-green);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin: 0;
-    }
-
-    .table-container {
-        width: 100%;
-        overflow-x: auto; 
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-    }
-
-    th {
-        color: var(--neon-green);
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        padding: 15px 30px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    td {
-        padding: 15px 30px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 0.95rem;
-    }
-
-    tr:last-child td {
-        border-bottom: none;
-    }
-
-    tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .price-tag {
-        font-weight: 700;
-        color: white;
-    }
-
-    .validity-info {
-        text-align: center;
-        color: var(--text-gray);
-        font-size: 0.8rem;
-        margin-bottom: 40px;
-    }
-</style>
 
 <section class="pricelist-section" id="cenik">
     <div class="section-header">
@@ -461,7 +415,19 @@
     </div>
 </section>
 
-<footer>&copy; 2020 - 2026 Technické služby Red County</footer>
+<section class="map-section" id="mapa">
+    <div class="section-header">
+        <h2>MAPA <span>CHRÁNĚNÝCH ÚZEMÍ</span></h2>
+        <div class="line"></div>
+    </div>
+    
+    <div id="map-wrapper">
+        <div id="map-canvas"></div>
+        <div id="message"></div>
+    </div>
+</section>
+
+<footer>© 2020 - 2026 Technické služby Red County</footer>
 
 <script>
 let vybranaDivize = ""; 
@@ -542,13 +508,363 @@ function openForm(t) {
     });
 </script>
 
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyCo-09fHxV3NRRGfoXsdVPRgvJ-yDLTsb8"></script>
+<script src="https://artic.leosight.cz/design/js/jquery.min.js"></script>
+<script src="https://artic.leosight.cz/design/mapa/js/SanMap.min.js"></script>
+<script>
+    var mapType = new SanMapType(0, 3, function(zoom, x, y) {
+        return x == -1 && y == -1 ? "https://artic.leosight.cz/design/mapa/tiles/map.outer.png" : "https://artic.leosight.cz/design/mapa/tiles/map." + zoom + "." + x + "." + y + ".png";
+    });
+    
+    var map = SanMap.createMap(document.getElementById('map-canvas'), {
+        'Mapa chráněných území': mapType
+    }, -1, null, false, 'Mapa chráněných území');
+    
+    map.setOptions({
+        scrollwheel: true,
+        disableDefaultUI: false,
+        backgroundColor: '#1a1a1a'
+    });
+
+    // PŮVODNÍ ÚZEMÍ
+    var coordschiliad = [{lat: -65.3688, lng: -69.7182},{lat: -64.7187, lng: -67.581},{lat: -62.7102, lng: -64.9632},{lat: -58.7304, lng: -62.6928},{lat: -53.7096, lng: -59.6079},{lat: -50.0517, lng: -58.2348},{lat: -49.0542, lng: -58.2282},{lat: -48.9831, lng: -57.2445},{lat: -44.9964, lng: -57.2397},{lat: -43.4703, lng: -58.1403},{lat: -39.5364, lng: -61.8054},{lat: -34.2843, lng: -64.8018},{lat: -31.1367, lng: -67.9476},{lat: -28.41882, lng: -72.7779},{lat: -27.2259, lng: -76.9821},{lat: -29.09319, lng: -78.3144},{lat: -31.3074, lng: -81.8523},{lat: -33.9939, lng: -84.8778},{lat: -34.9875, lng: -86.7558},{lat: -41.6397, lng: -87.6879},{lat: -46.8927, lng: -87.4557},{lat: -51.9189, lng: -87.7101},{lat: -55.155, lng: -87.3789},{lat: -57.6264, lng: -86.3529},{lat: -59.9919, lng: -83.8197},{lat: -62.8947, lng: -81.4005},{lat: -65.8476, lng: -78.7131},{lat: -65.748, lng: -77.2149},{lat: -64.8936, lng: -73.6932},{lat: -64.9911, lng: -70.5441},];
+    var areachiliad = new google.maps.Polygon({
+        paths: coordschiliad,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areachiliad.setMap(map);
+    google.maps.event.addListener(areachiliad, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Mount Chiliad</strong>');
+    });
+
+    var coordsrodeo = [{lat: -47.1651, lng: 13.00662},{lat: -46.2426, lng: 13.0128},{lat: -45.5118, lng: 13.00857},{lat: -44.9439, lng: 12.9321},{lat: -44.55, lng: 12.77802},{lat: -45.7671, lng: 11.22072},{lat: -46.2537, lng: 10.82226},{lat: -46.7103, lng: 10.5063},{lat: -46.9518, lng: 10.36941},{lat: -47.1252, lng: 10.34631},{lat: -47.1711, lng: 11.24136},];
+    var arearodeo = new google.maps.Polygon({
+        paths: coordsrodeo,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    arearodeo.setMap(map);
+    google.maps.event.addListener(arearodeo, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Rodeo Park</strong>');
+    });
+
+    var coordskongres = [{lat: 13.74897, lng: -78.5028},{lat: 13.74978, lng: -80.8992},{lat: 13.74675, lng: -81.4812},{lat: 13.67283, lng: -85.3098},{lat: 10.59234, lng: -85.3149},{lat: 10.33194, lng: -85.1646},{lat: 9.63597, lng: -84.2907},{lat: 9.2655, lng: -84.0369},{lat: 8.94156, lng: -83.9796},{lat: 8.94249, lng: -81.4692},{lat: 8.94198, lng: -80.9079},{lat: 8.94456, lng: -79.0974},{lat: 9.00699, lng: -78.8064},{lat: 9.16164, lng: -78.6324},{lat: 9.33693, lng: -78.5352},{lat: 9.546, lng: -78.4941},{lat: 10.15116, lng: -78.4977},];
+    var areakongres = new google.maps.Polygon({
+        paths: coordskongres,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areakongres.setMap(map);
+    google.maps.event.addListener(areakongres, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Komplex budov Kongresu San Andreas</strong>');
+    });
+
+    var coordsvinewood = [{lat: -24.35277, lng: 41.1318},{lat: -23.73876, lng: 40.9002},{lat: -23.50359, lng: 42.57},{lat: -23.80347, lng: 43.968},{lat: -25.21911, lng: 43.7334},{lat: -24.7296, lng: 41.8473},{lat: -24.5178, lng: 41.5668},];
+    var areavinewood = new google.maps.Polygon({
+        paths: coordsvinewood,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areavinewood.setMap(map);
+    google.maps.event.addListener(areavinewood, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Nápis Vinewood</strong>');
+    });
+
+    var coordsglen = [{lat: -37.5261, lng: 61.7064},{lat: -34.3776, lng: 61.704},{lat: -34.3698, lng: 56.3055},{lat: -35.1303, lng: 56.3052},{lat: -35.3364, lng: 56.2731},{lat: -35.4924, lng: 56.1837},{lat: -35.6307, lng: 56.0481},{lat: -35.7243, lng: 55.8549},{lat: -37.5177, lng: 55.863},];
+    var areaglen = new google.maps.Polygon({
+        paths: coordsglen,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areaglen.setMap(map);
+    google.maps.event.addListener(areaglen, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Glen Park</strong>');
+    });
+
+    var coordsvictoria = [{lat: 72.672415, lng: -74.097708}, {lat: 72.520356, lng: -74.724609}, {lat: 71.930698, lng: -74.366228}, {lat: 72.219902, lng: -73.812444},];
+    var areavictoria = new google.maps.Polygon({
+        paths: coordsvictoria,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areavictoria.setMap(map);
+    google.maps.event.addListener(areavictoria, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Kostel sv. Victorie</strong>');
+    });
+
+    var coordsdowntown = [{lat: 21.635453, lng: -62.353975}, {lat: 21.562377, lng: -60.500647}, {lat: 17.356930, lng: -60.502218}, {lat: 17.350148, lng: -62.352781},];
+    var areadowntown = new google.maps.Polygon({
+        paths: coordsdowntown,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areadowntown.setMap(map);
+    google.maps.event.addListener(areadowntown, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Park Downtown</strong>');
+    });
+
+    var coordsaldea = [{lat: 74.720603, lng: -38.449614}, {lat: 76.806306, lng: -38.442949}, {lat: 76.692473, lng: -40.117031}, {lat: 74.371055, lng: -40.427732},];
+    var areaaldea = new google.maps.Polygon({
+        paths: coordsaldea,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areaaldea.setMap(map);
+    google.maps.event.addListener(areaaldea, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Aldea Malvada</strong>');
+    });
+
+    var coordsbalogdam = [{lat: 59.512789, lng: -26.786492}, {lat: 59.395272, lng: -27.037061}, {lat: 58.844447, lng: -26.886134}, {lat: 58.905161, lng: -26.649470},];
+    var areabalogdam = new google.maps.Polygon({
+        paths: coordsbalogdam,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areabalogdam.setMap(map);
+    google.maps.event.addListener(areabalogdam, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Pomník cti Ervina Baloga</strong>');
+    });
+
+    var coordslevnohrad = [{lat: 47.161754, lng: -23.960094}, {lat: 47.163757, lng: -23.059254}, {lat: 47.152262, lng: -23.004454}, {lat: 47.118398, lng: -22.951838}, {lat: 47.070406, lng: -22.918731}, {lat: 47.014658, lng: -22.907450}, {lat: 46.420375, lng: -22.907626}, {lat: 46.358438, lng: -22.928300}, {lat: 46.317905, lng: -22.954777}, {lat: 46.288099, lng: -23.003408}, {lat: 46.265933, lng: -23.057280}, {lat: 46.263926, lng: -23.953649},];
+    var arealevnohrad = new google.maps.Polygon({
+        paths: coordslevnohrad,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    arealevnohrad.setMap(map);
+    google.maps.event.addListener(arealevnohrad, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Kostel Levnohrad</strong>');
+    });
+
+    var coordsbarrancas = [{lat: 45.774316, lng: -22.034247}, {lat: 46.220123, lng: -22.120294}, {lat: 46.755824, lng: -22.103101}, {lat: 46.749408, lng: -21.652645}, {lat: 46.209650, lng: -21.510536}, {lat: 45.605365, lng: -21.709243},];
+    var areabarrancas = new google.maps.Polygon({
+        paths: coordsbarrancas,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areabarrancas.setMap(map);
+    google.maps.event.addListener(areabarrancas, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Ruiny Las Barrancas</strong>');
+    });
+
+    var coordsbalogfc = [{lat: 32.658688, lng: -9.220392}, {lat: 32.204667, lng: -9.224782}, {lat: 32.200038, lng: -8.557097}, {lat: 32.648075, lng: -8.559116},];
+    var areabalogfc = new google.maps.Polygon({
+        paths: coordsbalogfc,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areabalogfc.setMap(map);
+    google.maps.event.addListener(areabalogfc, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Pomník cti Ervina Baloga</strong>');
+    });
+
+    var coordspershing = [{lat: -47.922634, lng: 45.738241}, {lat: -51.816522, lng: 45.741237}, {lat: -51.819412, lng: 43.039318}, {lat: -47.920679, lng: 43.032894},];
+    var areapershing = new google.maps.Polygon({
+        paths: coordspershing,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areapershing.setMap(map);
+    google.maps.event.addListener(areapershing, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Park a pomník cti Ervina Baloga - Pershing Square</strong>');
+    });
+
+    var coordspalisades = [{lat: 24.578663, lng: -82.850457}, {lat: 24.585262, lng: -83.072432}, {lat: 24.628449, lng: -83.233389}, {lat: 24.689647, lng: -83.360757}, {lat: 24.769982, lng: -83.488330}, {lat: 24.990789, lng: -83.688970}, {lat: 25.218018, lng: -83.819165}, {lat: 25.478926, lng: -83.904609}, {lat: 25.778091, lng: -83.932720}, {lat: 27.395880, lng: -83.932266}, {lat: 28.083929, lng: -84.025481}, {lat: 28.755818, lng: -84.341506}, {lat: 29.221536, lng: -84.701323}, {lat: 29.676621, lng: -85.148511}, {lat: 30.075652, lng: -85.555950}, {lat: 30.491766, lng: -85.866489}, {lat: 30.977812, lng: -86.070579}, {lat: 31.486838, lng: -86.137969}, {lat: 32.695580, lng: -86.114531}, {lat: 35.093947, lng: -86.116553}, {lat: 35.605192, lng: -86.061394}, {lat: 35.856024, lng: -85.977129}, {lat: 36.081954, lng: -85.850449}, {lat: 36.486980, lng: -85.538672}, {lat: 37.320773, lng: -84.700276}, {lat: 37.422228, lng: -84.447847}, {lat: 37.512162, lng: -84.014707}, {lat: 37.466917, lng: -83.530518}, {lat: 37.309318, lng: -83.146736}, {lat: 36.996379, lng: -82.891736}, {lat: 36.697533, lng: -82.668091}, {lat: 36.356338, lng: -82.544275}, {lat: 35.959252, lng: -82.562292}, {lat: 35.632152, lng: -82.642793}, {lat: 35.228895, lng: -82.813579}, {lat: 35.166167, lng: -82.756743}, {lat: 34.780697, lng: -82.873337}, {lat: 34.351923, lng: -82.877366}, {lat: 33.939364, lng: -82.815505}, {lat: 33.533291, lng: -82.656863}, {lat: 33.115741, lng: -82.421814}, {lat: 32.695719, lng: -82.092407}, {lat: 32.163519, lng: -82.504629}, {lat: 31.529967, lng: -82.758721}, {lat: 30.850514, lng: -82.844692},];
+    var areapalisades = new google.maps.Polygon({
+        paths: coordspalisades,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areapalisades.setMap(map);
+    google.maps.event.addListener(areapalisades, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Palisades Park</strong>');
+    });
+
+    var coordsobs = [{lat: -56.809391, lng: 32.241984}, {lat: -56.802609, lng: 33.264415}, {lat: -56.800594, lng: 36.081837}, {lat: -56.765383, lng: 36.809458}, {lat: -56.720973, lng: 36.857977}, {lat: -56.421859, lng: 36.859149}, {lat: -56.426774, lng: 39.144185}, {lat: -56.676445, lng: 39.670060}, {lat: -56.681473, lng: 40.620894}, {lat: -57.071147, lng: 40.624852}, {lat: -57.091692, lng: 42.492671}, {lat: -57.613857, lng: 43.102218}, {lat: -57.603497, lng: 45.594401}, {lat: -60.415679, lng: 45.590936}, {lat: -61.048660, lng: 45.626448}, {lat: -61.684490, lng: 45.753197}, {lat: -62.280352, lng: 45.955525}, {lat: -62.590510, lng: 46.034374}, {lat: -63.079541, lng: 46.263475}, {lat: -63.166509, lng: 45.918413}, {lat: -63.216343, lng: 45.448473}, {lat: -63.218306, lng: 43.370717}, {lat: -63.293130, lng: 42.627843}, {lat: -63.521455, lng: 41.898516}, {lat: -63.878306, lng: 41.255493}, {lat: -64.300254, lng: 40.748921}, {lat: -64.609900, lng: 40.454766}, {lat: -65.160220, lng: 39.703015}, {lat: -65.327271, lng: 39.370020}, {lat: -65.431230, lng: 39.018940}, {lat: -65.600903, lng: 38.379185}, {lat: -65.774604, lng: 38.028453}, {lat: -66.051555, lng: 37.762445}, {lat: -66.655166, lng: 37.238137}, {lat: -67.882251, lng: 36.581202}, {lat: -68.543232, lng: 36.386884}, {lat: -69.641807, lng: 35.812987}, {lat: -70.364670, lng: 34.875117}, {lat: -70.419939, lng: 34.069640}, {lat: -70.356680, lng: 33.540725}, {lat: -69.822993, lng: 32.872672}, {lat: -69.241047, lng: 32.439133}, {lat: -68.628193, lng: 32.026285}, {lat: -67.792961, lng: 31.569397}, {lat: -67.168616, lng: 31.365300}, {lat: -66.665200, lng: 31.338329}, {lat: -66.636592, lng: 31.238390}, {lat: -66.995581, lng: 30.608866}, {lat: -66.792488, lng: 30.341076}, {lat: -66.325950, lng: 30.111233}, {lat: -64.705730, lng: 30.115042}, {lat: -62.506135, lng: 31.779595}, {lat: -61.970002, lng: 31.747797}, {lat: -61.550815, lng: 31.945129}, {lat: -60.972341, lng: 31.846106}, {lat: -60.420612, lng: 31.910991}, {lat: -60.013099, lng: 32.036785}, {lat: -59.772894, lng: 32.048379}, {lat: -59.538534, lng: 32.017518}, {lat: -59.060625, lng: 32.094016}, {lat: -58.523177, lng: 32.177542}, {lat: -57.913942, lng: 32.200375}, {lat: -57.785350, lng: 32.252443}, {lat: -57.271304, lng: 32.222391}, {lat: -57.215548, lng: 32.260492},];
+    var areaobs = new google.maps.Polygon({
+        paths: coordsobs,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areaobs.setMap(map);
+    google.maps.event.addListener(areaobs, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Observatoř Verdant Bluffs</strong>');
+    });
+
+    var coordsbb = [{lat: 6.995241, lng: -6.377642}, {lat: 7.055003, lng: -6.441086}, {lat: 7.585906, lng: -8.467117}, {lat: 7.780773, lng: -9.341363}, {lat: 8.334373, lng: -14.966437}, {lat: 8.324287, lng: -16.544665}, {lat: 8.257228, lng: -17.355353}, {lat: 8.047780, lng: -18.515336}, {lat: 7.630699, lng: -19.776509}, {lat: 7.389336, lng: -20.264844}, {lat: 6.450261, lng: -21.642999}, {lat: 5.988180, lng: -22.286190}, {lat: 5.775368, lng: -22.661505}, {lat: 5.659425, lng: -22.778198}, {lat: 5.514557, lng: -22.883622}, {lat: 5.180441, lng: -23.031564}, {lat: 4.895089, lng: -23.092375}, {lat: 4.486347, lng: -23.104861}, {lat: 4.225040, lng: -23.077767}, {lat: 4.036485, lng: -23.029563}, {lat: 3.863897, lng: -22.948369}, {lat: 3.732966, lng: -22.861439}, {lat: 3.620703, lng: -22.745175}, {lat: 3.555341, lng: -22.627125}, {lat: 3.527042, lng: -22.504404}, {lat: 3.532600, lng: -22.291989}, {lat: 3.683500, lng: -21.760391}, {lat: 3.705643, lng: -21.475920}, {lat: 3.671652, lng: -21.193517}, {lat: 3.581919, lng: -20.943124}, {lat: 3.466401, lng: -20.721061}, {lat: 3.312178, lng: -20.511850}, {lat: 3.099167, lng: -20.300781}, {lat: 2.689480, lng: -20.043809}, {lat: 2.213787, lng: -19.876300}, {lat: 1.759831, lng: -19.838033}, {lat: 0.361298, lng: -20.000729}, {lat: 0.175967, lng: -19.962647}, {lat: -0.101263, lng: -19.945878}, {lat: -0.435846, lng: -19.984146}, {lat: -0.826236, lng: -20.096166}, {lat: -1.189198, lng: -20.276418}, {lat: -1.529118, lng: -20.534973}, {lat: -1.838125, lng: -20.834531}, {lat: -2.474942, lng: -21.725790}, {lat: -3.053266, lng: -22.886266}, {lat: -3.527767, lng: -24.120623}, {lat: -3.794382, lng: -24.980290}, {lat: -4.312503, lng: -26.866857}, {lat: -4.448375, lng: -27.177464}, {lat: -4.692128, lng: -27.447112}, {lat: -5.035060, lng: -27.664063}, {lat: -5.473009, lng: -27.848963}, {lat: -6.012215, lng: -28.006547}, {lat: -6.793141, lng: -28.155245}, {lat: -6.884822, lng: -28.103701}, {lat: -6.921145, lng: -28.035826}, {lat: -7.161198, lng: -27.140215}, {lat: -7.266661, lng: -26.507908}, {lat: -7.300758, lng: -25.885217}, {lat: -7.260583, lng: -25.252529}, {lat: -7.168977, lng: -23.958834}, {lat: -7.261198, lng: -20.888524}, {lat: -7.107833, lng: -19.313207}, {lat: -7.081430, lng: -18.488932}, {lat: -7.153646, lng: -17.759491}, {lat: -7.331699, lng: -17.070910}, {lat: -7.770078, lng: -15.868852}, {lat: -7.949127, lng: -15.260957}, {lat: -8.006176, lng: -14.929106}, {lat: -8.040363, lng: -14.404351}, {lat: -7.984167, lng: -13.784767}, {lat: -7.787670, lng: -12.942017}, {lat: -7.676394, lng: -12.505416}, {lat: -7.571009, lng: -11.939382}, {lat: -7.598801, lng: -11.227195}, {lat: -7.754604, lng: -10.548838}, {lat: -8.378708, lng: -9.283982}, {lat: -8.454494, lng: -8.976231}, {lat: -8.450582, lng: -8.678596}, {lat: -8.270395, lng: -8.242174}, {lat: -7.934785, lng: -7.832042}, {lat: -7.884669, lng: -7.814088}, {lat: -7.799733, lng: -7.842489}, {lat: -7.651299, lng: -7.927369}, {lat: -6.986245, lng: -8.379451}, {lat: -6.260270, lng: -8.790494}, {lat: -5.580856, lng: -9.100230}, {lat: -4.886038, lng: -9.347427}, {lat: -4.182537, lng: -9.495688}, {lat: -3.513180, lng: -9.533370}, {lat: -2.898310, lng: -9.494943}, {lat: -2.255567, lng: -9.427728}, {lat: -1.595766, lng: -9.328072}, {lat: -0.950713, lng: -9.216378}, {lat: -0.330264, lng: -9.066838}, {lat: 1.614344, lng: -8.497369}, {lat: 1.995381, lng: -8.386880}, {lat: 3.667638, lng: -7.744571}, {lat: 4.531904, lng: -7.404246}, {lat: 5.792182, lng: -6.900420}, {lat: 6.582491, lng: -6.508827},];
+    var areabb = new google.maps.Polygon({
+        paths: coordsbb,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areabb.setMap(map);
+    google.maps.event.addListener(areabb, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Panopticon</strong>');
+    });
+
+    var coordsbeyond = [{lat: -70.362107, lng: -35.715743}, {lat: -70.090129, lng: -35.816481}, {lat: -69.717261, lng: -35.783467}, {lat: -68.905752, lng: -35.408470}, {lat: -68.294546, lng: -34.984325}, {lat: -67.479456, lng: -34.773281}, {lat: -67.273792, lng: -34.674261}, {lat: -66.734019, lng: -34.520259}, {lat: -66.275186, lng: -34.061294}, {lat: -65.789297, lng: -33.898107}, {lat: -65.142517, lng: -33.832379}, {lat: -64.107312, lng: -33.528911}, {lat: -63.790854, lng: -32.535450}, {lat: -61.916133, lng: -31.287393}, {lat: -59.731494, lng: -29.870089}, {lat: -58.404177, lng: -29.259075}, {lat: -57.358326, lng: -28.987346}, {lat: -57.296865, lng: -28.206956}, {lat: -57.122117, lng: -27.261685}, {lat: -56.730795, lng: -26.253768}, {lat: -56.226379, lng: -25.718137}, {lat: -55.663271, lng: -24.626644}, {lat: -55.595771, lng: -24.297799}, {lat: -55.291300, lng: -23.668369}, {lat: -55.249874, lng: -23.593596}, {lat: -55.051604, lng: -23.179107}, {lat: -54.863284, lng: -22.823430}, {lat: -54.794498, lng: -22.552623}, {lat: -54.890914, lng: -21.582072}, {lat: -55.111985, lng: -20.563211}, {lat: -54.667112, lng: -19.619295}, {lat: -54.656960, lng: -18.654419}, {lat: -54.713870, lng: -17.573941}, {lat: -53.877664, lng: -16.338104}, {lat: -53.742656, lng: -16.247521}, {lat: -52.757878, lng: -16.797427}, {lat: -52.916323, lng: -15.838163}, {lat: -53.283984, lng: -14.395114}, {lat: -53.884036, lng: -13.586731}, {lat: -54.636273, lng: -12.732405}, {lat: -55.188043, lng: -12.105765}, {lat: -56.165804, lng: -11.463913}, {lat: -56.992258, lng: -11.479769}, {lat: -58.081776, lng: -11.496621}, {lat: -58.118016, lng: -11.481708}, {lat: -61.775215, lng: -10.954466}, {lat: -63.435146, lng: -10.644638}, {lat: -64.890403, lng: -10.286881}, {lat: -66.242644, lng: -9.842836}, {lat: -67.769897, lng: -9.216816}, {lat: -68.962800, lng: -8.582545}, {lat: -69.476243, lng: -8.243928}, {lat: -70.133972, lng: -7.706387}, {lat: -72.645447, lng: -5.141992}, {lat: -73.628203, lng: -4.086801}, {lat: -74.299409, lng: -3.423479}, {lat: -74.991782, lng: -2.855162}, {lat: -75.642935, lng: -2.394842}, {lat: -76.314119, lng: -1.996211}, {lat: -76.972581, lng: -1.696719}, {lat: -77.628340, lng: -1.450000}, {lat: -78.247690, lng: -1.275299}, {lat: -79.381172, lng: -1.115912}, {lat: -80.878103, lng: -1.131686}, {lat: -81.851206, lng: -1.346220}, {lat: -82.320967, lng: -1.536556}, {lat: -82.735898, lng: -1.763300}, {lat: -83.081653, lng: -2.009700}, {lat: -83.378730, lng: -2.279087}, {lat: -83.627271, lng: -2.546172}, {lat: -83.842976, lng: -2.837044}, {lat: -84.133806, lng: -3.333953}, {lat: -84.353262, lng: -3.830577}, {lat: -84.489719, lng: -4.328487}, {lat: -84.560852, lng: -4.814484}, {lat: -84.559629, lng: -6.450569}, {lat: -84.459448, lng: -7.133749}, {lat: -84.236257, lng: -8.084387}, {lat: -83.880073, lng: -9.365826}, {lat: -83.091951, lng: -12.198517}, {lat: -82.804167, lng: -13.321754}, {lat: -82.591692, lng: -14.225641}, {lat: -82.392275, lng: -15.435198}, {lat: -82.282903, lng: -16.678841}, {lat: -82.249299, lng: -17.966906}, {lat: -82.278420, lng: -19.138123}, {lat: -82.354937, lng: -20.231396}, {lat: -82.469216, lng: -21.219302}, {lat: -82.592908, lng: -21.970234}, {lat: -82.779038, lng: -22.657667}, {lat: -83.033042, lng: -23.323021}, {lat: -83.317625, lng: -23.960984}, {lat: -84.198743, lng: -25.662605}, {lat: -84.891387, lng: -27.260577}, {lat: -85.075576, lng: -27.742806}, {lat: -85.214084, lng: -28.209274}, {lat: -85.304751, lng: -28.768152}, {lat: -85.348469, lng: -29.445648}, {lat: -85.344609, lng: -30.704921}, {lat: -85.302927, lng: -31.056537}, {lat: -84.586619, lng: -32.411448}, {lat: -82.848933, lng: -32.873459}, {lat: -81.715459, lng: -33.582828}, {lat: -80.875627, lng: -34.041328}, {lat: -80.339956, lng: -34.331056}, {lat: -79.633550, lng: -34.732782}, {lat: -78.395889, lng: -35.224270}, {lat: -77.297388, lng: -35.701908}, {lat: -77.357651, lng: -36.038657}, {lat: -77.136460, lng: -36.165776}, {lat: -76.313049, lng: -36.386763}, {lat: -75.338372, lng: -37.009530}, {lat: -74.725591, lng: -36.981877}, {lat: -74.474824, lng: -36.810916}, {lat: -73.636450, lng: -36.667075}, {lat: -72.635596, lng: -36.944963}, {lat: -71.709675, lng: -36.835510}, {lat: -71.134417, lng: -36.775342}, {lat: -70.891216, lng: -36.039485},];
+    var areabeyond = new google.maps.Polygon({
+        paths: coordsbeyond,
+        strokeColor: '#39FF14',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14',
+        fillOpacity: 0.15
+    });
+    areabeyond.setMap(map);
+    google.maps.event.addListener(areabeyond, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Back o Beyond</strong>');
+    });
+
+    // NOVÁ ÚZEMÍ (PŘIDÁNA NÍŽE)
+
+    var coordsstatdt = [{lat: 27.171753, lng: -59.742173}, {lat: 25.879365, lng: -59.747172}, {lat: 25.876956, lng: -57.356104}, {lat: 27.172462, lng: -57.357550},];
+    var areastatdt = new google.maps.Polygon({
+        paths: coordsstatdt,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areastatdt.setMap(map);
+    google.maps.event.addListener(areastatdt, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Náměstí Downtown</strong>');
+    })
+
+    var coordstom = [{lat: 54.130920, lng: -9.565382}, {lat: 54.113306, lng: -9.293482}, {lat: 54.300234, lng: -9.061701}, {lat: 54.770035, lng: -8.840063}, {lat: 55.007897, lng: -8.607651}, {lat: 55.342218, lng: -8.159488}, {lat: 55.487714, lng: -8.059449}, {lat: 55.620337, lng: -8.077197}, {lat: 55.750719, lng: -7.886069}, {lat: 55.751799, lng: -7.829254}, {lat: 55.853536, lng: -7.803083}, {lat: 56.126938, lng: -7.427861}, {lat: 56.350510, lng: -7.193432}, {lat: 56.406797, lng: -7.175866}, {lat: 56.714257, lng: -7.380961}, {lat: 56.860298, lng: -7.301002}, {lat: 57.133228, lng: -7.459409}, {lat: 57.287791, lng: -7.693846}, {lat: 57.380548, lng: -7.975327}, {lat: 57.130115, lng: -8.389646}, {lat: 56.993661, lng: -8.702340}, {lat: 57.011788, lng: -9.325856}, {lat: 56.880355, lng: -9.534521}, {lat: 56.961965, lng: -9.685755}, {lat: 57.016919, lng: -9.687888}, {lat: 56.967169, lng: -9.769992}, {lat: 56.916409, lng: -9.951037}, {lat: 57.027814, lng: -10.132618}, {lat: 56.955791, lng: -10.392857}, {lat: 56.782603, lng: -10.592732}, {lat: 56.678778, lng: -10.748893}, {lat: 56.425056, lng: -10.886936}, {lat: 56.109196, lng: -10.947861}, {lat: 55.504966, lng: -10.840050}, {lat: 54.850946, lng: -10.899152}, {lat: 54.477228, lng: -10.712093}, {lat: 54.251360, lng: -10.408404}, {lat: 54.287761, lng: -10.123753}, {lat: 54.125292, lng: -9.647519},];
+    var areatom = new google.maps.Polygon({
+        paths: coordstom,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areatom.setMap(map);
+    google.maps.event.addListener(areatom, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Regular Tom</strong>');
+    });
+
+    var coordsgarcia = [{lat: 9.307584, lng: -67.859443}, {lat: 9.310600, lng: -68.537937}, {lat: 9.262142, lng: -69.105491}, {lat: 9.176299, lng: -69.607295}, {lat: 8.973633, lng: -70.074551}, {lat: 8.710584, lng: -70.513616}, {lat: 8.337175, lng: -70.915591}, {lat: 7.708303, lng: -71.527712}, {lat: 8.301023, lng: -72.150352}, {lat: 6.139211, lng: -72.180146}, {lat: 5.068753, lng: -72.301150}, {lat: 4.495239, lng: -72.339653}, {lat: 3.275214, lng: -72.339653}, {lat: -1.803124, lng: -72.339038}, {lat: -1.809980, lng: -71.460205}, {lat: 0.602017, lng: -71.460505}, {lat: 1.054002, lng: -71.365627}, {lat: 1.443282, lng: -71.093840}, {lat: 1.698510, lng: -70.721265}, {lat: 1.789932, lng: -70.255649}, {lat: 1.803695, lng: -68.557383}, {lat: 3.565044, lng: -68.445037}, {lat: 6.552666, lng: -68.436746}, {lat: 6.550261, lng: -67.871938},];
+    var areagarcia = new google.maps.Polygon({
+        paths: coordsgarcia,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areagarcia.setMap(map);
+    google.maps.event.addListener(areagarcia, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Park Garcia</strong>');
+    });
+
+    var coordsfc = [{lat: 36.930363, lng: 5.319463}, {lat: 36.683459, lng: 5.496047}, {lat: 36.296986, lng: 4.961857}, {lat: 36.515457, lng: 4.770597},];
+    var areafc = new google.maps.Polygon({
+        paths: coordsfc,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areafc.setMap(map);
+    google.maps.event.addListener(areafc, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Nápis Fort Carson</strong>');
+    });
+
+    var coordstoe = [{lat: 41.046632, lng: 72.670232}, {lat: 41.047588, lng: 62.327344}, {lat: 35.938085, lng: 62.322158}, {lat: 35.945186, lng: 72.672012},];
+    var areatoe = new google.maps.Polygon({
+        paths: coordstoe,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areatoe.setMap(map);
+    google.maps.event.addListener(areatoe, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>The Camel\'s Toe</strong>');
+    });
+
+    var coordslagoon = [{lat: -0.720602, lng: 61.490061}, {lat: -0.749361, lng: 61.330997}, {lat: -0.518249, lng: 60.943531}, {lat: -0.180226, lng: 60.822015}, {lat: -0.246412, lng: 58.508174}, {lat: -0.773495, lng: 58.378982}, {lat: -0.920900, lng: 58.169868}, {lat: -0.991041, lng: 57.915157}, {lat: -1.312225, lng: 57.329568}, {lat: -1.257568, lng: 56.832107}, {lat: -1.867119, lng: 56.510775}, {lat: -2.605327, lng: 56.247103}, {lat: -3.275999, lng: 56.961292}, {lat: -3.725413, lng: 57.020365}, {lat: -4.142764, lng: 56.978862}, {lat: -4.845985, lng: 56.760505}, {lat: -5.200065, lng: 56.594575}, {lat: -6.407196, lng: 56.829357}, {lat: -7.497822, lng: 56.706753}, {lat: -7.946436, lng: 56.981993}, {lat: -9.055919, lng: 58.168096}, {lat: -9.015493, lng: 58.859088}, {lat: -7.771473, lng: 61.470234}, {lat: -7.368982, lng: 62.022502}, {lat: -7.224350, lng: 62.227163}, {lat: -7.232612, lng: 64.401072}, {lat: -7.468857, lng: 66.815522}, {lat: -7.761776, lng: 68.066682}, {lat: -7.555292, lng: 68.292957}, {lat: -7.091610, lng: 68.339553}, {lat: -6.198615, lng: 68.100447}, {lat: -5.806406, lng: 67.769861}, {lat: -5.518437, lng: 67.721975}, {lat: -5.288856, lng: 67.851064}, {lat: -4.977127, lng: 67.771707}, {lat: -4.518526, lng: 66.986697}, {lat: -4.373248, lng: 66.786870}, {lat: -4.298724, lng: 66.387451}, {lat: -4.137190, lng: 66.080859}, {lat: -3.872518, lng: 65.845422}, {lat: -3.098564, lng: 65.300017}, {lat: -2.665418, lng: 64.989785}, {lat: -2.256714, lng: 64.897236}, {lat: -1.816844, lng: 64.953867}, {lat: -0.695341, lng: 64.137708}, {lat: -0.441797, lng: 63.792026}, {lat: 0.140457, lng: 63.627085}, {lat: 0.530661, lng: 63.752263}, {lat: 0.864335, lng: 63.730547}, {lat: 0.968246, lng: 63.635991}, {lat: 0.979572, lng: 62.473477}, {lat: 0.822189, lng: 62.440085}, {lat: 0.410481, lng: 62.223750}, {lat: 0.305386, lng: 62.148516}, {lat: -0.596302, lng: 61.729109}, {lat: -0.682919, lng: 61.654482},];
+    var arealagoon = new google.maps.Polygon({
+        paths: coordslagoon,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    arealagoon.setMap(map);
+    google.maps.event.addListener(arealagoon, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Fisher\'s Lagoon</strong>');
+    });
+
+    var coordscalt = [{lat: 34.295812, lng: -59.307012}, {lat: 34.294779, lng: -61.334301}, {lat: 33.936453, lng: -61.332367}, {lat: 33.673301, lng: -61.384460}, {lat: 33.673015, lng: -61.966282}, {lat: 32.949888, lng: -61.963198}, {lat: 32.945592, lng: -61.866621}, {lat: 32.862935, lng: -61.728003}, {lat: 32.693892, lng: -61.721858}, {lat: 32.690380, lng: -61.206544}, {lat: 32.690973, lng: -59.305811},];
+    var areacalt = new google.maps.Polygon({
+        paths: coordscalt,
+        strokeColor: '#39FF14', // Změněno na zelenou
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#39FF14', // Změněno na zelenou
+        fillOpacity: 0.15
+    });
+    areacalt.setMap(map);
+    google.maps.event.addListener(areacalt, 'click', function(event) {
+        $('#message').fadeOut().fadeIn().html('<strong>Katedrála Calton Heights</strong>');
+    });
+</script>
+
 </body>
-
 </html>
-
-
-
-
-
-
-
