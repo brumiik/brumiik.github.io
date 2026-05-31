@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PALMECTRO | Inovativní logistika & služby</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS Proměnné pro Tmavě Modrý Profesionální Vzhled */
+        :root {
+            --bg-deep: #030712;     /* Extrémně tmavá modrá/černá */
+            --bg-card: #0b1121;     /* Tmavá modrá pro karty */
+            --text-main: #e2e8f0;   /* Světle šedá pro lepší čitelnost */
+            --text-muted: #94a3b8;
+            --neon-blue: #0a4fbd;   /* Hluboká tmavě modrá (namísto azurové) */
+            --neon-blue-glow: rgba(10, 79, 189, 0.5); /* Tmavě modrá záře */
+            --neon-purple: #1e3a8a; /* Tmavší modrá pro gradienty */
+            --border-glow: 1px solid rgba(10, 79, 189, 0.3);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Fonty */
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        /* --- ZÁKLADNÍ NASTAVENÍ --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 18px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(10, 79, 189, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(30, 58, 138, 0.05) 0%, transparent 50%);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-card);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue);
+        }
+
+        /* --- TYPOGRAFIE & GLOBÁLNÍ TŘÍDY --- */
+        h1, h2, h3, .logo {
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .highlight {
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue-glow);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20%;
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+
+        /* Tlačítka */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--neon-blue);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 5px 15px var(--neon-blue-glow);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--neon-blue-glow);
+            background: #0c5ac9; /* Mírně světlejší při hoveru */
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            box-shadow: inset 0 0 10px var(--neon-blue-glow);
+        }
+
+        .btn-outline:hover {
+            background: var(--neon-blue);
+            color: #fff;
+            box-shadow: 0 5px 15px var(--neon-blue-glow);
+        }
+
+        /* --- NAVIGACE --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: var(--border-glow);
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--neon-blue);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue-glow);
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::before, nav a.active::before {
+            width: 100%;
+        }
+
+        /* Hamburger Menu (Mobil) */
+        .menu-toggle {
+            display: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* --- HERO SEKCE --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 2rem;
+            overflow: hidden;
+        }
+
+        /* Abstraktní pozadí v Hero sekci */
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(180deg, rgba(3, 7, 18, 0.4) 0%, var(--bg-deep) 100%),
+                url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M10 10h80v80h-80z" fill="none" stroke="rgba(10, 79, 189, 0.08)" stroke-width="1"/></svg>') repeat;
+            z-index: -1;
+            opacity: 1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* --- O SPOLEČNOSTI --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            border: var(--border-glow);
+            text-align: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(10, 79, 189, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px var(--neon-blue-glow);
+        }
+
+        .stat-label {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* --- PRÁCE KTERÉ NABÍZÍME --- */
+        .jobs-container {
+            position: relative;
+            padding: 4rem 0;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .job-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            position: relative;
+            border: 1px solid rgba(10, 79, 189, 0.1);
+            transition: var(--transition-smooth);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .job-card:hover {
+            transform: translateY(-10px);
+            background: rgba(11, 17, 33, 0.8);
+            border-color: var(--neon-blue);
+            box-shadow: 0 15px 35px rgba(10, 79, 189, 0.25);
+        }
+
+        .job-card:hover::before {
+            opacity: 1;
+        }
+
+        .job-icon {
+            font-size: 3.5rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .job-card:hover .job-icon {
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue-glow);
+        }
+
+        .job-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .job-desc {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .job-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .job-features li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .job-features i {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+        }
+
+        /* --- VEDENÍ SPOLEČNOSTI --- */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(10, 79, 189, 0.1);
+            transition: var(--transition-smooth);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .team-member:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 15px 35px rgba(10, 79, 189, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--bg-deep), #1a2238);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(10, 79, 189, 0.3);
+            font-size: 3rem;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+
+        .team-member:hover .member-avatar {
+            color: var(--neon-blue);
+            border-color: var(--neon-blue);
+            box-shadow: inset 0 0 15px var(--neon-blue-glow), 0 0 15px var(--neon-blue-glow);
+        }
+
+        .member-name {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: var(--neon-blue);
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .member-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* --- PŘIHLÁŠKA (FORMULÁŘ) --- */
+        .apply-section {
+            background: linear-gradient(to bottom, var(--bg-deep), var(--bg-card));
+            padding: 6rem 2rem;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(11, 17, 33, 0.6);
+            padding: 4rem;
+            border-radius: 12px;
+            border: var(--border-glow);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid rgba(10, 79, 189, 0.2);
+            color: #fff;
+            padding: 1.2rem;
+            border-radius: 6px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            transition: var(--transition-smooth);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue-glow);
+        }
+
+        .form-label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--bg-card);
+            padding: 0 10px;
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+        }
+        
+        select.form-control {
+            appearance: none;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%230a4fbd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: 96%;
+            background-position-y: 50%;
+        }
+
+        select.form-control option {
+            background-color: var(--bg-card);
+            color: #fff;
+            padding: 10px;
+        }
+
+        .form-submit {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            padding: 18px;
+        }
+
+        /* Notifikace formuláře */
+        #formMessage {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        .msg-success { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .msg-error { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+        /* --- MODÁLNÍ OKNO PRO CENÍK --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--neon-blue);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(10, 79, 189, 0.3);
+            transform: translateY(-50px);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .close-modal:hover {
+            color: var(--neon-blue);
+            transform: scale(1.1);
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #fff;
+        }
+
+        .table-responsive {
+            width: 100%;
+            max-height: 60vh; /* Maximální výška tabulky (60% výšky okna) */
+            overflow-y: auto; /* Povolí vertikální scrolování */
+            overflow-x: auto;
+            border: 1px solid rgba(10, 79, 189, 0.2);
+            border-radius: 8px;
+            background: rgba(3, 7, 18, 0.3);
+        }
+
+        /* Vlastní scrollbar pro tabulku, aby ladil k webu */
+        .table-responsive::-webkit-scrollbar {
+            width: 8px;
+        }
+        .table-responsive::-webkit-scrollbar-track {
+            background: rgba(3, 7, 18, 0.5);
+            border-radius: 0 8px 8px 0;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 4px;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .price-table th, .price-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(10, 79, 189, 0.2);
+            color: var(--text-main);
+        }
+
+        .price-table th {
+            font-family: var(--font-display);
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #0b1121; /* Neprůhledné pozadí, aby text neprosvítal */
+            position: sticky; /* Přilepí hlavičku nahoru při scrollování */
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .price-table tbody tr {
+            transition: background 0.3s ease;
+        }
+
+        .price-table tbody tr:hover {
+            background: rgba(10, 79, 189, 0.1);
+        }
+
+        /* --- PATIČKA --- */
+        footer {
+            background: #02040a;
+            border-top: 1px solid rgba(10, 79, 189, 0.1);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 2rem 0;
+        }
+
+        .footer-social a {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            transition: var(--transition-smooth);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(10, 79, 189, 0.2);
+        }
+
+        .footer-social a:hover {
+            color: var(--neon-blue);
+            border-color: var(--neon-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--neon-blue-glow);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 1rem;
+            border-top: 1px solid rgba(10, 79, 189, 0.1);
+            padding-top: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* --- RESPONZIVITA --- */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 4rem; }
+            .section-title { font-size: 2.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .menu-toggle { display: block; }
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(3, 7, 18, 0.95);
+                flex-direction: column;
+                padding: 20px 0;
+                text-align: center;
+                gap: 20px;
+                border-bottom: var(--border-glow);
+            }
+            nav ul.active { display: flex; }
+            
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1.2rem; }
+            .hero-buttons { flex-direction: column; }
+            
+            .about-grid, .form-row { grid-template-columns: 1fr; }
+            .form-container { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hlavička & Navigace -->
+    <header id="header">
+        <a href="#home" class="logo"><i class="fa-solid fa-bolt"></i> PALMECTRO A.S.</a>
+        <div class="menu-toggle" id="mobile-menu"><i class="fa-solid fa-bars"></i></div>
+        <nav>
+            <ul id="nav-list">
+                <li><a href="#home" class="active">Domů</a></li>
+                <li><a href="#about">O nás</a></li>
+                <li><a href="#jobs">Nabídka Práce</a></li>
+                <li><a href="#team">Vedení</a></li>
+                <li><a href="#apply" class="highlight">Přidat se</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Úvod (Hero Section) -->
+    <section id="home" class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1>Palmectro a.s.<br><span class="highlight"></span></h1>
+            <p>S námi se vyplatí dělat!</p>
+            <div class="hero-buttons">
+                <a href="#jobs" class="btn">Prozkoumat Pozice</a>
+                <a href="#about" class="btn btn-outline">Zjistit Více</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- O společnosti -->
+    <section id="about" class="container">
+        <h2 class="section-title">O <span class="highlight">Nás</span></h2>
+        <div class="about-grid">
+            <div class="about-image">
+                <!-- Zde by normálně byl obrázek, místo něj abstraktní CSS prvek pro zachování moderního vzhledu bez externích souborů -->
+                <div style="width: 100%; height: 400px; background: linear-gradient(45deg, var(--bg-card), #1a2238); border-radius: 12px; border: var(--border-glow); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                    <i class="fa-solid fa-microchip" style="font-size: 10rem; color: rgba(10, 79, 189, 0.2);"></i>
+                    <div style="position: absolute; width: 150%; height: 2px; background: var(--neon-blue); transform: rotate(-45deg); box-shadow: 0 0 30px var(--neon-blue); opacity: 0.6;"></div>
+                </div>
+            </div>
+            <div class="about-text">
+                <p>Palmectro je společnost zaměřená na opravy a údržbu elektrického vedení a logistické služby. Naším cílem je odvádět kvalitní práci, rozvíjet firmu a budovat silný tým lidí, na které je spoleh.</p>
+                <p>Každý den se podílíme na údržbě a opravách elektrické infrastruktury, zajišťujeme přepravu materiálu a staráme se o to, aby všechny svěřené úkoly byly splněny efektivně a profesionálně. Zakládáme si na zodpovědném   
+                   přístupu, dobré organizaci práce a vzájemné spolupráci.</p>
+                <p>Věříme, že úspěch společnosti stojí především na lidech, kteří ji tvoří. Proto dbáme na férové jednání, týmového ducha a prostředí, ve kterém se každý může dále rozvíjet a podílet se na růstu firmy.</p>
+                <div class="about-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">Spokojených zaměstnanců</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Spolehlivost</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nabízené práce -->
+    <section id="jobs" class="container">
+        <h2 class="section-title">Nabízené <span class="highlight">Práce</span></h2>
+        <div class="jobs-grid">
+            
+            <!-- Logistika -->
+            <div class="job-card">
+                <i class="fa-solid fa-truck-fast job-icon"></i>
+                <h3 class="job-title">Pracovník logistiky</h3>
+                <p class="job-desc">Hledáme řidiče kamionu, elektrikáře či kurýry! Staň se důležitým členem našeho týmu.</p>
+                <ul class="job-features">
+                    <li><i class="fa-solid fa-check"></i> Zrychlené tahače - 125km/h.</li>
+                    <li><i class="fa-solid fa-check"></i> Upravené elektrikářeské vozidla.</li>
+                    <li><i class="fa-solid fa-check"></i> Pravidelné soutěže a prémie.</li>
+                </ul>
+                <a href="#apply" class="btn btn-outline" onclick="selectJob('driver')">Mám zájem</a>
+            </div>
+
+            <!-- Odtahovkář -->
+            <div class="job-card">
+                <i class="fa-solid fa-truck-pickup job-icon"></i>
+                <h3 class="job-title">Pracovník odtahové služby</h3>
+                <p class="job-desc">Práce s vozidly? Neváhej a staň se pracovníkem odtahové služby! Zajišťuj bezpečný provoz na silnicích.</p>
+                <ul class="job-features">
+                    <li><i class="fa-solid fa-check"></i> 50% z výdělku.</li>
+                    <li><i class="fa-solid fa-check"></i> Nový vozový park.</li>
+                    <li><i class="fa-solid fa-check"></i> Pravidelné soutěže a prémie.</li>
+                </ul>
+                <a href="#apply" class="btn btn-outline" onclick="selectJob('towing')">Mám zájem</a>
+            </div>
+
+            <!-- Mechanik -->
+            <div class="job-card">
+                <i class="fa-solid fa-wrench job-icon"></i>
+                <h3 class="job-title">Servisní mechanik</h3>
+                <p class="job-desc">Doktoři naší flotily. Udržují naše i klientská vozidla v perfektní kondici. Od výměny oleje po generální opravy motorů.</p>
+                <ul class="job-features">
+                    <li><i class="fa-solid fa-check"></i> Nová moderní dílna.</li>
+                    <li><i class="fa-solid fa-check"></i> xxx</li>
+                    <li><i class="fa-solid fa-check"></i> Pravidelné soutěže a prémie.</li>
+                </ul>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="#apply" class="btn btn-outline" style="flex: 1; text-align: center; padding: 12px 20px;" onclick="selectJob('mechanic')">Mám zájem</a>
+                    <button onclick="openPricelist()" class="btn btn-outline" style="flex: 1; text-align: center; padding: 12px 20px;"><i class="fa-solid fa-list-ul" style="margin-right: 8px;"></i> Ceník</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Vedení společnosti -->
+    <section id="team" class="container">
+        <h2 class="section-title">Vedení <span class="highlight">Společnosti</span></h2>
+        <div class="team-grid">
+            
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                <h3 class="member-name">James Palmerg</h3>
+                <p class="member-role">Generální ředitel</p>
+                <p class="member-desc">vedeni@palmectro.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                <h3 class="member-name">John Dreilor</h3>
+                <p class="member-role">Provozní ředitel</p>
+                <p class="member-desc">vedeni@palmectro.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                <h3 class="member-name">Adelaide Beaufort</h3>
+                <p class="member-role">Personální manažer</p>
+                <p class="member-desc">adelaide.beaufort@post.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                <h3 class="member-name">Marcus Bennett</h3>
+                <p class="member-role">Provozní manažer</p>
+                <p class="member-desc">marcus.bennett@post.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-gear"></i></div>
+                <h3 class="member-name">Milan Hnedy</h3>
+                <p class="member-role">Personalista</p>
+                <p class="member-desc">personalista@palmectro.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-gear"></i></div>
+                <h3 class="member-name">Brian Longoria</h3>
+                <p class="member-role">Personalista</p>
+                <p class="member-desc">personalista@palmectro.ic</p>
+            </div>
+
+            <div class="team-member">
+                <div class="member-avatar"><i class="fa-solid fa-user-gear"></i></div>
+                <h3 class="member-name">Miguel Guzman Lopez</h3>
+                <p class="member-role">Personalista</p>
+                <p class="member-desc">personalista@palmectro.ic</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Přihláška (Formulář) -->
+    <section id="apply" class="apply-section">
+        <div class="container" style="padding: 0;">
+            <h2 class="section-title">Staň se <span class="highlight">Členem Týmu</span></h2>
+            
+            <div class="form-container">
+                <form id="applicationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Jméno</label>
+                            <input type="text" id="firstName" class="form-control" required placeholder="Vaše křestní jméno">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Příjmení</label>
+                            <input type="text" id="lastName" class="form-control" required placeholder="Vaše příjmení">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" required placeholder="jmeno.prijmeni@post.ic">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefonní číslo</label>
+                            <input type="tel" id="phone" class="form-control" required placeholder="123 456">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">O jakou pozici máte zájem?</label>
+                        <select id="positionSelect" class="form-control" required>
+                            <option value="" disabled selected>-- Vyberte pozici --</option>
+                            <option value="courier">Personalista</option>
+                            <option value="driver">Pracovník logistiky</option>
+                            <option value="towing">Pracovník odtahové služby</option>
+                            <option value="mechanic">Servisní mechanik</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Něco o Vás (Zkušenosti atd.) - Nepovinné</label>
+                        <textarea id="message" class="form-control" rows="4" placeholder="Napište nám krátce o Vaší praxi..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn form-submit">Odeslat Přihlášku <i class="fa-solid fa-paper-plane" style="margin-left: 10px;"></i></button>
+                    
+                    <div id="formMessage"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patička -->
+    <footer>
+        <a href="#home" class="logo footer-logo"><i class="fa-solid fa-bolt"></i> PALMECTRO</a>
+        <p style="color: var(--text-muted);">Inovace v pohybu. Spolehlivost v praxi.</p>
+        
+        <div class="footer-social">
+            <a href="#"><i class="fa-brands fa-discord"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2026 PALMECTRO A.S. S námi se vyplatí dělat. 
+        </div>
+    </footer>
+
+    <!-- Modální okno pro Ceník Mechanika -->
+    <div id="pricelistModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePricelist()"><i class="fa-solid fa-xmark"></i></span>
+            <h3 class="modal-title">Ceník <span class="highlight">Servisu</span></h3>
+            
+            <div class="table-responsive">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>Druh úkonu</th>
+                            <th>Časová náročnost</th>
+                            <th>Cena bez DPH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Běžný servis a údržba -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Běžný servis a údržba</strong></td></tr>
+                        <tr><td>Základní počítačová diagnostika</td><td>30 min</td><td>500 Kč</td></tr>
+                        <tr><td>Rozšířená diagnostika (hledání závady)</td><td>dle náročnosti</td><td>950 Kč / hod</td></tr>
+                        <tr><td>Výměna oleje a olejového filtru (práce)</td><td>45 min</td><td>700 Kč</td></tr>
+                        <tr><td>Výměna vzduchového filtru</td><td>15 min</td><td>200 Kč</td></tr>
+                        <tr><td>Výměna kabinového filtru</td><td>20 min</td><td>250 Kč</td></tr>
+                        <tr><td>Výměna palivového filtru</td><td>30 min</td><td>400 Kč</td></tr>
+                        <tr><td>Kompletní prohlídka vozu před STK</td><td>1.5 hod</td><td>1 500 Kč</td></tr>
+                        <tr><td>Zajištění a provedení STK + Emise</td><td>1 den</td><td>3 500 Kč</td></tr>
+                        
+                        <!-- Brzdový systém -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Brzdový systém</strong></td></tr>
+                        <tr><td>Výměna brzdových destiček (1 náprava)</td><td>1 hod</td><td>1 200 Kč</td></tr>
+                        <tr><td>Výměna brzdových kotoučů a destiček (1 náprava)</td><td>1.5 hod</td><td>1 800 Kč</td></tr>
+                        <tr><td>Výměna brzdové kapaliny a odvzdušnění</td><td>1 hod</td><td>900 Kč</td></tr>
+                        <tr><td>Výměna brzdového třmenu</td><td>1 hod</td><td>1 000 Kč</td></tr>
+                        <tr><td>Oprava / seřízení ruční brzdy</td><td>1 hod</td><td>950 Kč</td></tr>
+
+                        <!-- Podvozek a řízení -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Podvozek a řízení</strong></td></tr>
+                        <tr><td>3D Geometrie kol (měření a seřízení)</td><td>1 hod</td><td>1 200 Kč</td></tr>
+                        <tr><td>Výměna tlumiče pérování (1 ks)</td><td>1 hod</td><td>1 000 Kč</td></tr>
+                        <tr><td>Výměna čepu řízení</td><td>45 min</td><td>700 Kč</td></tr>
+                        <tr><td>Výměna ramene nápravy</td><td>1.5 hod</td><td>1 400 Kč</td></tr>
+                        <tr><td>Výměna ložiska kola</td><td>1.5 - 2 hod</td><td>Od 1 500 Kč</td></tr>
+
+                        <!-- Motor a spojka -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Motor, spojka a výfuk</strong></td></tr>
+                        <tr><td>Výměna rozvodů (vč. vodní pumpy)</td><td>4 - 8 hod</td><td>Od 4 500 Kč</td></tr>
+                        <tr><td>Výměna spojkové sady</td><td>4 - 6 hod</td><td>Od 4 000 Kč</td></tr>
+                        <tr><td>Výměna žhavících / zapalovacích svíček</td><td>1 hod</td><td>800 Kč</td></tr>
+                        <tr><td>Čištění EGR ventilu</td><td>2 hod</td><td>1 800 Kč</td></tr>
+                        <tr><td>Výměna dílu výfukového potrubí</td><td>1 - 2 hod</td><td>Od 950 Kč</td></tr>
+
+                        <!-- Klimatizace -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Klimatizace</strong></td></tr>
+                        <tr><td>Servis klimatizace (plnění + zkouška těsnosti)</td><td>1 hod</td><td>1 000 Kč + chladivo</td></tr>
+                        <tr><td>Dezinfekce klimatizace ozonem</td><td>30 min</td><td>500 Kč</td></tr>
+                        <tr><td>Výměna kompresoru klimatizace</td><td>2 - 3 hod</td><td>Od 2 500 Kč</td></tr>
+
+                        <!-- Ostatní -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Ostatní práce</strong></td></tr>
+                        <tr><td>Seřízení světlometů</td><td>15 min</td><td>300 Kč</td></tr>
+                        <tr><td>Výměna autobaterie vč. kódování</td><td>30 min</td><td>500 Kč</td></tr>
+                        <tr><td>Montáž tažného zařízení</td><td>3 - 5 hod</td><td>Od 3 500 Kč</td></tr>
+                        <tr><td><strong>Hodinová sazba - běžné mechanické práce</strong></td><td><strong>1 hod</strong></td><td><strong>950 Kč</strong></td></tr>
+                        <tr><td><strong>Hodinová sazba - elektro a složité práce</strong></td><td><strong>1 hod</strong></td><td><strong>1 200 Kč</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Ceny jsou orientační a udávané <strong>bez DPH a materiálu</strong>. Přesná kalkulace Vám bude sdělena po fyzické prohlídce vozidla.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Mobilní Menu ---
+        const mobileMenuBtn = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+        const navLinks = document.querySelectorAll('#nav-list a');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+
+        // Zavřít menu při kliknutí na odkaz
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navList.classList.remove('active');
+            });
+        });
+
+        // --- Zvýraznění aktivní sekce v menu ---
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            const headerHeight = document.getElementById('header').offsetHeight;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - headerHeight - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- Předvyplnění pozice z tlačítek ---
+        function selectJob(jobValue) {
+            document.getElementById('positionSelect').value = jobValue;
+        }
+
+        // --- STREAMING_CHUNK:Adding logic for modal opening and closing... ---
+        // --- Ceník Modal Logika ---
+        const modal = document.getElementById('pricelistModal');
+        
+        function openPricelist() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Zabrání scrollovaní pod oknem
+        }
+
+        function closePricelist() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Povolí scrollovaní
+        }
+
+        // Zavření modalu kliknutím mimo tabulku (do prázdna)
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closePricelist();
+            }
+        });
+
+        // --- DISCORD WEBHOOK INTEGRACE ---
+        // SEM VLOŽTE VÁŠ DISCORD WEBHOOK URL!
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1510574145484750999/RsjrXiRIT32by0SvyT30Ibfgibt6M3a4kZ9Qtt1fyxHKFCuqiGE4-Pw09CB4pxEnI_L1'; 
+
+        const form = document.getElementById('applicationForm');
+        const formMessage = document.getElementById('formMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Zabrání klasickému odeslání stránky
+
+            // Získání hodnot z formuláře
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const positionElement = document.getElementById('positionSelect');
+            const positionText = positionElement.options[positionElement.selectedIndex].text;
+            const message = document.getElementById('message').value || '*Neuvedeno*';
+
+            // Změna textu tlačítka na načítání
+            const submitBtn = document.querySelector('.form-submit');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Odesílám...';
+            submitBtn.disabled = true;
+
+            // Kontrola, zda je webhook URL vyplněná (proti chybám)
+            if (DISCORD_WEBHOOK_URL === 'ZDE_VLOZTE_VAS_WEBHOOK_URL' || !DISCORD_WEBHOOK_URL) {
+                showFormMessage('Chyba: Webhook URL není nastavena v kódu!', 'error');
+                resetButton(submitBtn, originalBtnText);
+                return;
+            }
+
+            // Vytvoření Embed zprávy pro Discord
+            const discordPayload = {
+                username: "Palmectro Nábor",
+                avatar_url: "https://i.imgur.com/4M34hiw.png", // Můžete změnit za logo
+                embeds: [{
+                    title: "📄 Nová přihláška - " + positionText,
+                    // Změna barvy embedu na tmavě modrou (v decimálním formátu)
+                    color: 675773, // #0a4fbd
+                    fields: [
+                        { name: "Jméno a Příjmení", value: firstName + " " + lastName, inline: true },
+                        { name: "Pozice", value: positionText, inline: true },
+                        { name: "Kontakt", value: "📧 " + email + "\n📱 " + phone, inline: false },
+                        { name: "Doplňující zpráva / Praxe", value: message, inline: false }
+                    ],
+                    footer: { text: "PALMECTRO HR Systém • " + new Date().toLocaleString('cs-CZ') }
+                }]
+            };
+
+            // Odeslání dat na Discord přes Fetch API
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(discordPayload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Úspěch
+                    showFormMessage('Přihláška byla úspěšně odeslána! Brzy se Vám ozveme.', 'success');
+                    form.reset(); // Vymazání formuláře
+                } else {
+                    // Chyba ze strany Discordu (např. špatný webhook)
+                    showFormMessage('Chyba při odesílání na server. Zkuste to prosím znovu.', 'error');
+                }
+            })
+            .catch(error => {
+                // Chyba sítě
+                console.error('Error:', error);
+                showFormMessage('Chyba připojení. Zkontrolujte svůj internet.', 'error');
+            })
+            .finally(() => {
+                resetButton(submitBtn, originalBtnText);
+            });
+        });
+
+        function showFormMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.className = type === 'success' ? 'msg-success' : 'msg-error';
+            formMessage.style.display = 'block';
+            
+            // Schovat zprávu po 6 sekundách
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 6000);
+        }
+
+        function resetButton(btn, originalText) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
