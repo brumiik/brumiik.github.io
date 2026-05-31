@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmectro a.s.</title>
+    <title>PALMECTRO | Inovativní logistika & služby</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -724,7 +724,7 @@
             justify-content: center;
         }
 
-        .footer-social {
+                .footer-social {
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -750,6 +750,18 @@
             border-color: var(--neon-blue);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px var(--neon-blue-glow);
+        }
+
+        .footer-social a img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            transition: var(--transition-smooth);
+            filter: grayscale(100%) opacity(0.7); /* Ztlumený vzhled aby ladilo s textem */
+        }
+
+        .footer-social a:hover img {
+            filter: grayscale(0%) opacity(1); /* Plné barvy při najetí myší */
         }
 
         .copyright {
@@ -888,10 +900,9 @@
             <div class="job-card">
                 <i class="fa-solid fa-wrench job-icon"></i>
                 <h3 class="job-title">Servisní mechanik</h3>
-                <p class="job-desc">Doktoři naší flotily. Udržují naše i klientská vozidla v perfektní kondici. Od výměny oleje po generální opravy motorů.</p>
+                <p class="job-desc">Nová pozice, zatím v procesu přípravy.</p>
                 <ul class="job-features">
                     <li><i class="fa-solid fa-check"></i> Nová moderní dílna.</li>
-                    <li><i class="fa-solid fa-check"></i> xxx</li>
                     <li><i class="fa-solid fa-check"></i> Pravidelné soutěže a prémie.</li>
                 </ul>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
@@ -993,10 +1004,10 @@
                         <label class="form-label">O jakou pozici máte zájem?</label>
                         <select id="positionSelect" class="form-control" required>
                             <option value="" disabled selected>-- Vyberte pozici --</option>
-                            <option value="courier">Personalista</option>
+                            <option value="courier" disabled>Personalista <strong>(NÁBOR UZAVŘEN)</strong></option>
                             <option value="driver">Pracovník logistiky</option>
                             <option value="towing">Pracovník odtahové služby</option>
-                            <option value="mechanic">Servisní mechanik</option>
+                            <option value="mechanic" disabled>Servisní mechanik <strong>(NÁBOR UZAVŘEN)</strong></option>
                         </select>
                     </div>
 
@@ -1015,13 +1026,10 @@
 
     <!-- Patička -->
     <footer>
-        <a href="#home" class="logo footer-logo"><i class="fa-solid fa-bolt"></i> PALMECTRO</a>
-        <p style="color: var(--text-muted);">Inovace v pohybu. Spolehlivost v praxi.</p>
-        
+        <a href="#home" class="logo footer-logo"><i class="fa-solid fa-bolt"></i> PALMECTRO A.S.</a>        
         <div class="footer-social">
-            <a href="#"><i class="fa-brands fa-discord"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://artic.leosight.cz/iris.ic/palmectro" title="IRIS"><img src="https://i.imgur.com/R490KnS.png" alt="IRIS" target="_top"></a>
+            <a href="https://artic.leosight.cz/burza.ic/detail/74" title="Akcie"><i class="fa-solid fa-chart-line" target="_top"></i></a>
         </div>
         
         <div class="copyright">
@@ -1040,65 +1048,20 @@
                     <thead>
                         <tr>
                             <th>Druh úkonu</th>
-                            <th>Časová náročnost</th>
-                            <th>Cena bez DPH</th>
+                            <th>Cena (vč. práce)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Běžný servis a údržba -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Běžný servis a údržba</strong></td></tr>
-                        <tr><td>Základní počítačová diagnostika</td><td>30 min</td><td>500 Kč</td></tr>
-                        <tr><td>Rozšířená diagnostika (hledání závady)</td><td>dle náročnosti</td><td>950 Kč / hod</td></tr>
-                        <tr><td>Výměna oleje a olejového filtru (práce)</td><td>45 min</td><td>700 Kč</td></tr>
-                        <tr><td>Výměna vzduchového filtru</td><td>15 min</td><td>200 Kč</td></tr>
-                        <tr><td>Výměna kabinového filtru</td><td>20 min</td><td>250 Kč</td></tr>
-                        <tr><td>Výměna palivového filtru</td><td>30 min</td><td>400 Kč</td></tr>
-                        <tr><td>Kompletní prohlídka vozu před STK</td><td>1.5 hod</td><td>1 500 Kč</td></tr>
-                        <tr><td>Zajištění a provedení STK + Emise</td><td>1 den</td><td>3 500 Kč</td></tr>
+                        <!-- 1. -->
+                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Připravujeme</strong></td></tr>
+                        <tr><td>Připravujeme</td><td>0 Kč</td></tr>
                         
-                        <!-- Brzdový systém -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Brzdový systém</strong></td></tr>
-                        <tr><td>Výměna brzdových destiček (1 náprava)</td><td>1 hod</td><td>1 200 Kč</td></tr>
-                        <tr><td>Výměna brzdových kotoučů a destiček (1 náprava)</td><td>1.5 hod</td><td>1 800 Kč</td></tr>
-                        <tr><td>Výměna brzdové kapaliny a odvzdušnění</td><td>1 hod</td><td>900 Kč</td></tr>
-                        <tr><td>Výměna brzdového třmenu</td><td>1 hod</td><td>1 000 Kč</td></tr>
-                        <tr><td>Oprava / seřízení ruční brzdy</td><td>1 hod</td><td>950 Kč</td></tr>
-
-                        <!-- Podvozek a řízení -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Podvozek a řízení</strong></td></tr>
-                        <tr><td>3D Geometrie kol (měření a seřízení)</td><td>1 hod</td><td>1 200 Kč</td></tr>
-                        <tr><td>Výměna tlumiče pérování (1 ks)</td><td>1 hod</td><td>1 000 Kč</td></tr>
-                        <tr><td>Výměna čepu řízení</td><td>45 min</td><td>700 Kč</td></tr>
-                        <tr><td>Výměna ramene nápravy</td><td>1.5 hod</td><td>1 400 Kč</td></tr>
-                        <tr><td>Výměna ložiska kola</td><td>1.5 - 2 hod</td><td>Od 1 500 Kč</td></tr>
-
-                        <!-- Motor a spojka -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Motor, spojka a výfuk</strong></td></tr>
-                        <tr><td>Výměna rozvodů (vč. vodní pumpy)</td><td>4 - 8 hod</td><td>Od 4 500 Kč</td></tr>
-                        <tr><td>Výměna spojkové sady</td><td>4 - 6 hod</td><td>Od 4 000 Kč</td></tr>
-                        <tr><td>Výměna žhavících / zapalovacích svíček</td><td>1 hod</td><td>800 Kč</td></tr>
-                        <tr><td>Čištění EGR ventilu</td><td>2 hod</td><td>1 800 Kč</td></tr>
-                        <tr><td>Výměna dílu výfukového potrubí</td><td>1 - 2 hod</td><td>Od 950 Kč</td></tr>
-
-                        <!-- Klimatizace -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Klimatizace</strong></td></tr>
-                        <tr><td>Servis klimatizace (plnění + zkouška těsnosti)</td><td>1 hod</td><td>1 000 Kč + chladivo</td></tr>
-                        <tr><td>Dezinfekce klimatizace ozonem</td><td>30 min</td><td>500 Kč</td></tr>
-                        <tr><td>Výměna kompresoru klimatizace</td><td>2 - 3 hod</td><td>Od 2 500 Kč</td></tr>
-
-                        <!-- Ostatní -->
-                        <tr style="background: rgba(10, 79, 189, 0.15);"><td colspan="3"><strong style="color: var(--neon-blue);">Ostatní práce</strong></td></tr>
-                        <tr><td>Seřízení světlometů</td><td>15 min</td><td>300 Kč</td></tr>
-                        <tr><td>Výměna autobaterie vč. kódování</td><td>30 min</td><td>500 Kč</td></tr>
-                        <tr><td>Montáž tažného zařízení</td><td>3 - 5 hod</td><td>Od 3 500 Kč</td></tr>
-                        <tr><td><strong>Hodinová sazba - běžné mechanické práce</strong></td><td><strong>1 hod</strong></td><td><strong>950 Kč</strong></td></tr>
-                        <tr><td><strong>Hodinová sazba - elektro a složité práce</strong></td><td><strong>1 hod</strong></td><td><strong>1 200 Kč</strong></td></tr>
                     </tbody>
                 </table>
             </div>
             
             <div style="margin-top: 1.5rem; text-align: center;">
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Ceny jsou orientační a udávané <strong>bez DPH a materiálu</strong>. Přesná kalkulace Vám bude sdělena po fyzické prohlídce vozidla.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Ceny jsou orientační a udávané <strong>vč. práce</strong>. Přesná kalkulace Vám bude sdělena po fyzické prohlídce vozidla.</p>
             </div>
         </div>
     </div>
@@ -1169,7 +1132,7 @@
 
         // --- DISCORD WEBHOOK INTEGRACE ---
         // SEM VLOŽTE VÁŠ DISCORD WEBHOOK URL!
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1510574145484750999/RsjrXiRIT32by0SvyT30Ibfgibt6M3a4kZ9Qtt1fyxHKFCuqiGE4-Pw09CB4pxEnI_L1'; 
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1510614175318151238/CtrGKgaw6pJR_TJ0crBRunuJu0Ak5ZSwch1HMrDqZLTjcyess6wOlSUYbDMqzXJVMGLS'; 
 
         const form = document.getElementById('applicationForm');
         const formMessage = document.getElementById('formMessage');
