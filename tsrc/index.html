@@ -546,7 +546,7 @@ function openForm(t) {
         };
 
         // Odesíláme data na náš skrytý PHP skript místo přímo na Discord
-        fetch('zpracuj.php', {
+        fetch('https://blue-fire-186e.brunnys.workers.dev', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(postData)
@@ -563,7 +563,7 @@ function openForm(t) {
             }
         })
         .catch(err => {
-            alert('Chyba spojení! Zkontrolujte internet nebo zda je zpracuj.php dostupný.');
+            alert('Chyba spojení! Zkontrolujte internet.');
             console.error(err);
         });
     });
