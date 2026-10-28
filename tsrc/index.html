@@ -542,7 +542,6 @@ function openForm(t) {
             payload: payloadData
         };
 
-        // Odesíláme data na náš skrytý PHP skript místo přímo na Discord
         fetch('https://blue-fire-186e.brunnys.workers.dev', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -822,7 +821,6 @@ function openForm(t) {
         $('#message').fadeOut().fadeIn().html('<strong>Back o Beyond</strong>');
     });
 
-    // --- NOVÁ ÚZEMÍ ---
     var coordsstatdt = [{lat: 27.171753, lng: -59.742173}, {lat: 25.879365, lng: -59.747172}, {lat: 25.876956, lng: -57.356104}, {lat: 27.172462, lng: -57.357550},];
     var areastatdt = new google.maps.Polygon({
         paths: coordsstatdt,
